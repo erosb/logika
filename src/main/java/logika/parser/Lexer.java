@@ -14,6 +14,8 @@ public class Lexer {
 
     private int charPosInLine = 1;
 
+    private boolean trailingSpaceWasYielded;
+
     public Lexer(final Reader reader) {
         if (!reader.markSupported()) {
             throw new IllegalArgumentException("this stream does not support marks");
@@ -32,7 +34,7 @@ public class Lexer {
                 Function<Character, String> matcher = tokenType.get();
                 String success = null;
                 int ch;
-                while ((ch = reader.read()) != -1) {
+                while ((ch = readch()) != -1) {
                     success = matcher.apply((char) ch);
                     if (success != null) {
                         break;
@@ -40,11 +42,12 @@ public class Lexer {
                 }
                 if (ch == -1) {
                     if (tokenType == TokenType.ID) {
-                        System.out.println("reached -1 with ID");
+                        // System.out.println("reached -1 with ID");
                         success = matcher.apply(' ');
-                        // reader.skip(-1);
+                        reader.skip(-1);
+                    } else {
+                        readerFinished = true;
                     }
-                    readerFinished = true;
                 }
                 if (TokenMatcher.NO_MATCH.equals(success)) {
                     reader.reset();
@@ -52,7 +55,7 @@ public class Lexer {
                     if (tokenType == TokenType.ID) {
                         reader.skip(-1);
                     }
-                    System.out.println("returning token '" + success + "'");
+                    // System.out.println("returning token '" + success + "'");
                     if (success == null) {
                         return null;
                     }
@@ -65,10 +68,22 @@ public class Lexer {
         }
     }
 
+    private int readch() throws IOException {
+        if (trailingSpaceWasYielded) {
+            return -1;
+        }
+        int rval = reader.read();
+        if (rval == -1) {
+            trailingSpaceWasYielded = true;
+            return ' ';
+        }
+        return rval;
+    }
+
     private void skipWhitespaces() throws IOException {
         reader.mark(Integer.MAX_VALUE);
         int wch;
-        while ((wch = reader.read()) == ' ' || wch == '\t' || wch == '\n') {
+        while ((wch = readch()) == ' ' || wch == '\t' || wch == '\n') {
             if (wch == '\n') {
                 ++lineNumber;
                 charPosInLine = 1;

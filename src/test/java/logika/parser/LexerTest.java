@@ -64,7 +64,7 @@ public class LexerTest {
 
     @Test
     public void testRealFormula() {
-        Lexer subject = subject("P1(orr, y, z) and P2(c1, c2) ");
+        Lexer subject = subject("P1(orr, y, z) and P2(c1, c2 )");
         List<Token> actual = readAll(subject);
         List<Token> expected = Arrays.asList(
                 new Token(TokenType.ID, "P1"),
