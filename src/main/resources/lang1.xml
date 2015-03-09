@@ -1,0 +1,40 @@
+<language>
+	<types>
+		<type name="Type1"/>
+		<type name="Type2" />
+		<type name="Type3" />
+	</types>
+	
+	<constants>
+		<constant name="C1" type="Type1" />
+		<constant name="C2" type="Type2" />
+		<constant name="C3" type="Type2" />
+	</constants>
+	
+	<predicates>
+		<predicate name="P1">
+			<arg type="Type1" />
+			<arg type="Type1" />
+		</predicate>
+		
+		<predicate name="P2">
+			<arg type="Type1" />
+			<arg type="Type2" />
+		</predicate>
+	</predicates>
+	
+	<terms>
+		<term name="f" type="Type1">
+			<arg type="Type1" />
+			<arg type="Type2" />
+		</term>
+		<term name="g" type="Type2">
+			<arg type="Type1" />
+			<arg type="Type3" />
+			<arg type="Type3" />
+		</term>
+		<term name="h" type="Type1">
+			<arg type="Type1" />
+		</term>
+	</terms>
+</language>
