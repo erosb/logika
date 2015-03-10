@@ -9,7 +9,7 @@ public class Main {
         String input = args[0];
         String output;
         try {
-            output = Parser.forString(input, Main.class.getResourceAsStream("/lang1.xml")).recognizeFormula();
+            output = Parser.forString(input, Main.class.getResourceAsStream("/lang1.xml")).recognize();
         } catch (RecognitionException e) {
             output = e.getMessage();
         }

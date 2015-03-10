@@ -40,30 +40,41 @@ public class Parser {
         }
     }
 
-    public String recognizeFormula() {
+    public String recognize() {
+        // Token token = lexer.nextToken();
+        // Token lookahead = lexer.nextToken();
+        // if (lookahead == null) {
+        // return checkSingleLiteral(token);
+        // }
+        // lexer.pushBack(lookahead);
+        recognizeFormula();
+        return "";
+    }
+
+    private void recognizeFormula() {
         Token token = lexer.nextToken();
-        Token lookahead = lexer.nextToken();
-        if (lookahead == null) {
-            return checkSingleLiteral(token);
-        }
-        lexer.pushBack(lookahead);
         TokenType tokenType = token.getType();
-        if (tokenType == TokenType.ID) {
-            return recognizePredicate(token.getText());
+        if (token.getType() == TokenType.ID) {
+            recognizePredicate(token.getText());
         } else if (tokenType == TokenType.AND
                 || tokenType == TokenType.OR
                 || tokenType == TokenType.IMPL) {
             recognizeTwoFormulas();
+        } else if (tokenType == TokenType.NOT) {
+            consume(new Token(TokenType.LPAREN, "("));
+            recognizeFormula();
+            consume(new Token(TokenType.RPAREN, ")"));
+        } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
+            consume(new Token(TokenType.LPAREN, "("));
+            Token qualifVar = lexer.nextToken();
+            if (qualifVar.getType() != TokenType.ID) {
+                throw new RecognitionException("expected ID, was: " + qualifVar);
+            }
+            consume(new Token(TokenType.COMMA, ","));
+            recognizeFormula();
+            consume(new Token(TokenType.RPAREN, ")"));
         }
-        return "";
     }
-
-    // private void recognizeFormula() {
-    // Token token = lexer.nextToken();
-    // if (token.getType() == TokenType.ID) {
-    // recognizePredicate(token.getText());
-    // }
-    // }
 
     private Type recognizeParam() {
         Token token = lexer.nextToken();

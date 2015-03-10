@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 public class IdMatcher implements Function<Character, String> {
 
-    private static final Collection<String> KEYWORDS = Arrays.asList("and", "or", "impl", "not");
+    private static final Collection<String> KEYWORDS = Arrays.asList("and", "or", "impl", "not", "all", "any");
 
     private final StringBuilder recognized = new StringBuilder();
 
