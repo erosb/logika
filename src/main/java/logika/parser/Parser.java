@@ -12,15 +12,15 @@ import logika.model.XMLLoader;
 
 public class Parser {
 
+    public static final Parser forString(final String str, final InputStream langFile) {
+        return new Parser(new Lexer(new StringReader(str + " ")), new XMLLoader(langFile).load());
+    }
+
     private static final Token LPAREN = new Token(TokenType.LPAREN, "(");
 
     private static final Token RPAREN = new Token(TokenType.RPAREN, ")");
 
     private static final Token COMMA = new Token(TokenType.COMMA, ",");
-
-    public static final Parser forString(final String str, final InputStream langFile) {
-        return new Parser(new Lexer(new StringReader(str + " ")), new XMLLoader(langFile).load());
-    }
 
     private final Language lang;
 
@@ -54,6 +54,10 @@ public class Parser {
         if (lang.predicateExists(tokenText)) {
             throw new RecognitionException("symbol " + tokenText
                     + " is a predicate, cannot be used as variable");
+        }
+        if (lang.constantExists(tokenText)) {
+            throw new RecognitionException("symbol " + tokenText
+                    + " is a constant, cannot be used as variable");
         }
     }
 
