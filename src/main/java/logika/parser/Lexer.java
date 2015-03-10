@@ -16,6 +16,8 @@ public class Lexer {
 
     private boolean trailingSpaceWasYielded;
 
+    private Token pushedBack;
+
     public Lexer(final Reader reader) {
         if (!reader.markSupported()) {
             throw new IllegalArgumentException("this stream does not support marks");
@@ -24,6 +26,11 @@ public class Lexer {
     }
 
     public Token nextToken() {
+        if (pushedBack != null) {
+            Token rval = pushedBack;
+            pushedBack = null;
+            return rval;
+        }
         if (readerFinished) {
             return null;
         }
@@ -66,6 +73,13 @@ public class Lexer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void pushBack(final Token t) {
+        if (pushedBack != null) {
+            throw new IllegalStateException("already pushed back " + pushedBack);
+        }
+        pushedBack = t;
     }
 
     private int readch() throws IOException {
