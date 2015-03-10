@@ -13,6 +13,14 @@ public class ScopingSymbolTableTest {
         Assert.assertTrue(subject.varExists("x"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void namingConflictTest() {
+        Variable var = var("x", "Type1");
+        ScopingSymbolTable subject = symbolTable();
+        subject.registerVariable(var);
+        subject.registerVariable(var("x", "Type2"));
+    }
+
     @Test
     public void registerVariable() {
         Variable var = var("x", "Type1");

@@ -13,7 +13,22 @@ public class ScopingSymbolTable extends Language {
         this.parentScope = parentScope;
     }
 
+    public SymbolTable getParentScope() {
+        return parentScope;
+    }
+
+    @Override
+    public boolean isReservedName(final String name) {
+        return super.isReservedName(name)
+                || variables.stream()
+                .filter((v) -> v.getName().equals(name))
+                .findFirst().isPresent();
+    }
+
     public void registerVariable(final Variable var) {
+        if (isReservedName(var.getName())) {
+            throw new IllegalArgumentException("variable [" + var.getName() + "] is already defined");
+        }
         variables.add(var);
     }
 

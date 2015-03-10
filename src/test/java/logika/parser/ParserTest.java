@@ -8,9 +8,9 @@ public class ParserTest {
 
     @Test
     public void andOrImplWorks() {
-        Assert.assertEquals("", subject("and(P1(x, y), P2(x, y))").recognize());
-        Assert.assertEquals("", subject("or(P1(x, y), P2(x, y))").recognize());
-        Assert.assertEquals("", subject("impl(P1(x, y), P2(x, y))").recognize());
+        Assert.assertEquals("", subject("and(P1(x, y), P2(u, v))").recognize());
+        Assert.assertEquals("", subject("or(P1(x, y), P2(u, v))").recognize());
+        Assert.assertEquals("", subject("impl(P1(x, y), P2(u, v))").recognize());
     }
 
     @Test
@@ -21,6 +21,11 @@ public class ParserTest {
     @Test
     public void predicateNotFound() {
         recognitionException("Z(x)", "Z is not a predicate");
+    }
+
+    @Test
+    public void quantifierShouldUseChildScope() {
+
     }
 
     @Test
@@ -39,23 +44,17 @@ public class ParserTest {
 
     @Test
     @Ignore
-    public void singleConstantResult() {
-        Assert.assertEquals("C1 is a constant", subject("C1").recognize());
-    }
-
-    @Test
-    public void singlePredicate() {
-        Assert.assertEquals("", subject("P1(x, y)").recognize());
-    }
-
-    @Test
-    @Ignore
     public void singleVariableResult() {
         Assert.assertEquals("x is a free variable", subject("x").recognize());
     }
 
     private Parser subject(final String input) {
         return Parser.forString(input, getClass().getResourceAsStream("/lang1.xml"));
+    }
+
+    @Test
+    public void varNamesAreBoundToTypeInScope() {
+        recognitionException("P2(x, x)", "param #1 of P2: expected type: Type2, actual type: Type1");
     }
 
 }

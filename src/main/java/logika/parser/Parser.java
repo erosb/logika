@@ -3,11 +3,12 @@ package logika.parser;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import logika.model.Constant;
 import logika.model.Language;
 import logika.model.Predicate;
+import logika.model.ScopingSymbolTable;
 import logika.model.Term;
 import logika.model.Type;
+import logika.model.Variable;
 import logika.model.XMLLoader;
 
 public class Parser {
@@ -24,20 +25,14 @@ public class Parser {
 
     private final Language lang;
 
+    private final ScopingSymbolTable currScope;
+
     private final Lexer lexer;
 
     public Parser(final Lexer lexer, final Language lang) {
         this.lexer = lexer;
+        this.currScope = new ScopingSymbolTable(lang);
         this.lang = lang;
-    }
-
-    private String checkSingleLiteral(final Token token) {
-        if (lang.constantExists(token.getText())) {
-            return token.getText() + " is a constant";
-        } else if (!lang.termExists(token.getText())) {
-            return token.getText() + " is a free variable";
-        }
-        return null;
     }
 
     private void consume(final Token expected) {
@@ -62,12 +57,6 @@ public class Parser {
     }
 
     public String recognize() {
-        // Token token = lexer.nextToken();
-        // Token lookahead = lexer.nextToken();
-        // if (lookahead == null) {
-        // return checkSingleLiteral(token);
-        // }
-        // lexer.pushBack(lookahead);
         recognizeFormula();
         return "";
     }
@@ -98,7 +87,7 @@ public class Parser {
         }
     }
 
-    private Type recognizeParam() {
+    private void recognizeParam(final String ownerName, final int paramIdx, final Type expectedType) {
         Token token = lexer.nextToken();
         if (token == null || token.getType() != TokenType.ID) {
             throw new RecognitionException("expected ID, was: " + token);
@@ -106,39 +95,42 @@ public class Parser {
         Token lookahead = lexer.nextToken();
         lexer.pushBack(lookahead);
         String tokenText = token.getText();
+        Type actualType;
         if (lookahead.getType() == TokenType.LPAREN) {
-            return recognizeTerm(tokenText);
+            actualType = recognizeTerm(tokenText);
         } else {
-            try {
-                Constant c = lang.constantByName(tokenText);
-                return c.getType();
-            } catch (IllegalArgumentException e) {
-                isReserved(tokenText);
-                return null; // variable
+            if (currScope.constantExists(tokenText)) {
+                actualType = lang.constantByName(tokenText).getType();
+            } else if (currScope.varExists(tokenText)) {
+                actualType = currScope.varByName(tokenText).getType();
+            } else {
+                currScope.registerVariable(new Variable(tokenText, expectedType));
+                actualType = expectedType;
             }
+        }
+        if (!actualType.equals(expectedType)) {
+            throw new RecognitionException("param #" + paramIdx + " of " + ownerName + ": expected type: "
+                    + expectedType.getName() + ", actual type: " + actualType.getName());
         }
     }
 
     private String recognizePredicate(final String predName) {
         consume(LPAREN);
+        Predicate pred;
         try {
-            Predicate pred = lang.predicateByName(predName);
-            int i = 0;
-            for (Type t : pred.getArgTypes()) {
-                if (i != 0) {
-                    consume(COMMA);
-                }
-                Type actualType = recognizeParam();
-                if (actualType != null && !t.equals(actualType)) {
-                    throw new RecognitionException("param #" + i + " of " + predName + ": expected type: "
-                            + t.getName() + ", actual type: " + actualType.getName());
-                }
-                ++i;
-            }
-            consume(RPAREN);
+            pred = lang.predicateByName(predName);
         } catch (IllegalArgumentException e) {
             throw new RecognitionException(predName + " is not a predicate");
         }
+        int i = 0;
+        for (Type t : pred.getArgTypes()) {
+            if (i != 0) {
+                consume(COMMA);
+            }
+            recognizeParam(predName, i, t);
+            ++i;
+        }
+        consume(RPAREN);
         return "";
     }
 
@@ -151,11 +143,7 @@ public class Parser {
                 if (i != 0) {
                     consume(COMMA);
                 }
-                Type actualType = recognizeParam();
-                if (actualType != null && !type.equals(actualType)) {
-                    throw new RecognitionException("param #" + i + " of " + termName + ": expected type: "
-                            + type.getName() + ", actual type: " + actualType.getName());
-                }
+                recognizeParam(termName, i, type);
                 ++i;
             }
             consume(RPAREN);

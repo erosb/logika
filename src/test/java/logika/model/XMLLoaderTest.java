@@ -1,4 +1,4 @@
-package logika;
+package logika.model;
 
 import java.util.Set;
 

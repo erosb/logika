@@ -52,6 +52,10 @@ public class Language implements SymbolTable {
         return types;
     }
 
+    public boolean isReservedName(final String name) {
+        return constantExists(name) || termExists(name) || predicateExists(name);
+    }
+
     @Override
     public Predicate predicateByName(final String name) {
         return predicates.stream()
