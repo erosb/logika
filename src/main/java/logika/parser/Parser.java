@@ -25,7 +25,7 @@ public class Parser {
 
     private final Language lang;
 
-    private final ScopingSymbolTable currScope;
+    private ScopingSymbolTable currScope;
 
     private final Lexer lexer;
 
@@ -75,15 +75,18 @@ public class Parser {
             recognizeFormula();
             consume(RPAREN);
         } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
+            currScope = new ScopingSymbolTable(currScope);
             consume(LPAREN);
             Token qualifVar = lexer.nextToken();
             if (qualifVar.getType() != TokenType.ID) {
                 throw new RecognitionException("expected ID, was: " + qualifVar);
             }
             isReserved(qualifVar.getText());
+            currScope.registerVariable(new Variable(qualifVar.getText(), null));
             consume(COMMA);
             recognizeFormula();
             consume(RPAREN);
+            currScope = (ScopingSymbolTable) currScope.getParentScope();
         }
     }
 
@@ -103,6 +106,10 @@ public class Parser {
                 actualType = lang.constantByName(tokenText).getType();
             } else if (currScope.varExists(tokenText)) {
                 actualType = currScope.varByName(tokenText).getType();
+                if (actualType == null) {
+                    currScope.setVarType(tokenText, expectedType);
+                    actualType = expectedType;
+                }
             } else {
                 currScope.registerVariable(new Variable(tokenText, expectedType));
                 actualType = expectedType;

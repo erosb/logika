@@ -1,6 +1,7 @@
 package logika.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ScopingSymbolTable extends Language {
@@ -30,6 +31,26 @@ public class ScopingSymbolTable extends Language {
             throw new IllegalArgumentException("variable [" + var.getName() + "] is already defined");
         }
         variables.add(var);
+    }
+
+    public void setVarType(final String varName, final Type type) {
+        Iterator<Variable> varIt = variables.iterator();
+        boolean found = false;
+        while (varIt.hasNext()) {
+            Variable var = varIt.next();
+            if (var.getName().equals(varName)) {
+                if (var.getType() != null) {
+                    throw new IllegalStateException("the type of variable [" + varName + "] is already set to "
+                            + var.getType());
+                }
+                varIt.remove();
+                found = true;
+            }
+        }
+        if (!found) {
+            throw new IllegalArgumentException("variable [" + varName + "] not found");
+        }
+        variables.add(new Variable(varName, type));
     }
 
     @Override

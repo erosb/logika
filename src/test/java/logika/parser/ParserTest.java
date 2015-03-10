@@ -24,8 +24,13 @@ public class ParserTest {
     }
 
     @Test
-    public void quantifierShouldUseChildScope() {
+    public void quantifiedVarTypesAreInferredOnFirstOccurence() {
+        recognitionException("all(x, P2(x, x)", "param #1 of P2: expected type: Type2, actual type: Type1");
+    }
 
+    @Test
+    public void quantifierShouldUseChildScope() {
+        subject("and(P1(x, y), all(y, P2(x, y)))").recognize();
     }
 
     @Test

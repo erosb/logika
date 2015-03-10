@@ -37,4 +37,14 @@ public class ScopingSymbolTableTest {
         return new Variable(name, new Type(typeName));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void varTypeChangeShouldWorkOnlyOnce() {
+        ScopingSymbolTable subject = symbolTable();
+        subject.registerVariable(new Variable("x", null));
+        Type newType = new Type("Type1");
+        subject.setVarType("x", newType);
+        Assert.assertEquals(newType, subject.varByName("x").getType());
+        subject.setVarType("x", new Type("Type2"));
+    }
+
 }
