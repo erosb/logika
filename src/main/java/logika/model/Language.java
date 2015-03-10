@@ -20,6 +20,11 @@ public class Language {
         this.terms = terms;
     }
 
+    public Constant constantByName(final String name) {
+        return constants.stream().filter((c) -> c.getName().equals(name)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("constant [" + name + "] not found"));
+    }
+
     public boolean constantExists(final String name) {
         return constants.stream().filter((c) -> c.getName().equals(name)).count() == 1;
     }

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import logika.parser.LexerException;
 import logika.parser.Parser;
 import logika.parser.RecognitionException;
 
@@ -27,7 +28,7 @@ public class Main {
         String output;
         try {
             output = Parser.forString(input, langStream).recognize();
-        } catch (RecognitionException e) {
+        } catch (RecognitionException | LexerException e) {
             output = e.getMessage();
         }
         System.out.println(output);

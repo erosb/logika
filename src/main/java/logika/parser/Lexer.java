@@ -69,7 +69,7 @@ public class Lexer {
                     return new Token(tokenType, success, lineNumber, charPosInLine);
                 }
             }
-            return null;
+            throw new LexerException(readAllInput());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,6 +80,15 @@ public class Lexer {
             throw new IllegalStateException("already pushed back " + pushedBack);
         }
         pushedBack = t;
+    }
+
+    private String readAllInput() throws IOException {
+        StringBuilder sb = new StringBuilder("failed to tokenize ");
+        int ch;
+        while ((ch = readch()) != -1) {
+            sb.append((char) ch);
+        }
+        return sb.toString();
     }
 
     private int readch() throws IOException {

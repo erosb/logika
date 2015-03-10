@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class LexerTest {
@@ -60,6 +61,19 @@ public class LexerTest {
                 new Token(TokenType.ID, "andy"),
                 new Token(TokenType.RPAREN, ")"));
         assertTokenList(expected, actual);
+    }
+
+    @Test
+    public void testLexingFailure() {
+        Lexer subject = subject("P1(x, $asd");
+        try {
+            while (subject.nextToken() != null) {
+                ;
+            }
+            Assert.fail("did not throw LexerException");
+        } catch (LexerException e) {
+            Assert.assertEquals("failed to tokenize $asd", e.getMessage().trim());
+        }
     }
 
     @Test

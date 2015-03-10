@@ -3,6 +3,7 @@ package logika.parser;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import logika.model.Constant;
 import logika.model.Language;
 import logika.model.Predicate;
 import logika.model.Term;
@@ -10,6 +11,12 @@ import logika.model.Type;
 import logika.model.XMLLoader;
 
 public class Parser {
+
+    private static final Token LPAREN = new Token(TokenType.LPAREN, "(");
+
+    private static final Token RPAREN = new Token(TokenType.RPAREN, ")");
+
+    private static final Token COMMA = new Token(TokenType.COMMA, ",");
 
     public static final Parser forString(final String str, final InputStream langFile) {
         return new Parser(new Lexer(new StringReader(str + " ")), new XMLLoader(langFile).load());
@@ -40,6 +47,16 @@ public class Parser {
         }
     }
 
+    private void isReserved(final String tokenText) {
+        if (lang.termExists(tokenText)) {
+            throw new RecognitionException("symbol " + tokenText + " is a term, cannot be used as variable");
+        }
+        if (lang.predicateExists(tokenText)) {
+            throw new RecognitionException("symbol " + tokenText
+                    + " is a predicate, cannot be used as variable");
+        }
+    }
+
     public String recognize() {
         // Token token = lexer.nextToken();
         // Token lookahead = lexer.nextToken();
@@ -61,43 +78,51 @@ public class Parser {
                 || tokenType == TokenType.IMPL) {
             recognizeTwoFormulas();
         } else if (tokenType == TokenType.NOT) {
-            consume(new Token(TokenType.LPAREN, "("));
+            consume(LPAREN);
             recognizeFormula();
-            consume(new Token(TokenType.RPAREN, ")"));
+            consume(RPAREN);
         } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
-            consume(new Token(TokenType.LPAREN, "("));
+            consume(LPAREN);
             Token qualifVar = lexer.nextToken();
             if (qualifVar.getType() != TokenType.ID) {
                 throw new RecognitionException("expected ID, was: " + qualifVar);
             }
-            consume(new Token(TokenType.COMMA, ","));
+            isReserved(qualifVar.getText());
+            consume(COMMA);
             recognizeFormula();
-            consume(new Token(TokenType.RPAREN, ")"));
+            consume(RPAREN);
         }
     }
 
     private Type recognizeParam() {
         Token token = lexer.nextToken();
-        if (token.getType() != TokenType.ID) {
+        if (token == null || token.getType() != TokenType.ID) {
             throw new RecognitionException("expected ID, was: " + token);
         }
         Token lookahead = lexer.nextToken();
         lexer.pushBack(lookahead);
+        String tokenText = token.getText();
         if (lookahead.getType() == TokenType.LPAREN) {
-            return recognizeTerm(token.getText());
+            return recognizeTerm(tokenText);
         } else {
-            return null; // variable
+            try {
+                Constant c = lang.constantByName(tokenText);
+                return c.getType();
+            } catch (IllegalArgumentException e) {
+                isReserved(tokenText);
+                return null; // variable
+            }
         }
     }
 
     private String recognizePredicate(final String predName) {
-        consume(new Token(TokenType.LPAREN, "("));
+        consume(LPAREN);
         try {
             Predicate pred = lang.predicateByName(predName);
             int i = 0;
             for (Type t : pred.getArgTypes()) {
                 if (i != 0) {
-                    consume(new Token(TokenType.COMMA, ","));
+                    consume(COMMA);
                 }
                 Type actualType = recognizeParam();
                 if (actualType != null && !t.equals(actualType)) {
@@ -106,7 +131,7 @@ public class Parser {
                 }
                 ++i;
             }
-            consume(new Token(TokenType.RPAREN, ")"));
+            consume(RPAREN);
         } catch (IllegalArgumentException e) {
             throw new RecognitionException(predName + " is not a predicate");
         }
@@ -116,11 +141,11 @@ public class Parser {
     private Type recognizeTerm(final String termName) {
         try {
             Term term = lang.termByName(termName);
-            consume(new Token(TokenType.LPAREN, "("));
+            consume(LPAREN);
             int i = 0;
             for (Type type : term.getArgTypes()) {
                 if (i != 0) {
-                    consume(new Token(TokenType.COMMA, ","));
+                    consume(COMMA);
                 }
                 Type actualType = recognizeParam();
                 if (actualType != null && !type.equals(actualType)) {
@@ -129,7 +154,7 @@ public class Parser {
                 }
                 ++i;
             }
-            consume(new Token(TokenType.RPAREN, ")"));
+            consume(RPAREN);
             return term.getType();
         } catch (IllegalArgumentException e) {
             throw new RecognitionException("term " + termName + " not found");
@@ -137,11 +162,11 @@ public class Parser {
     }
 
     private void recognizeTwoFormulas() {
-        consume(new Token(TokenType.LPAREN, "("));
+        consume(LPAREN);
         recognizeFormula();
-        consume(new Token(TokenType.COMMA, ","));
+        consume(COMMA);
         recognizeFormula();
-        consume(new Token(TokenType.RPAREN, ")"));
+        consume(RPAREN);
 
     }
 }
