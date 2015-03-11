@@ -20,15 +20,16 @@ public class ScopingSymbolTable extends Language {
 
     @Override
     public boolean isReservedName(final String name) {
-        return super.isReservedName(name)
-                || variables.stream()
-                .filter((v) -> v.getName().equals(name))
-                .findFirst().isPresent();
+        return parentScope.isReservedName(name);
+    }
+
+    private boolean isVarDefinedInScope(final Variable var) {
+        return variables.stream().filter((v) -> v.getName().equals(var.getName())).findFirst().isPresent();
     }
 
     public void registerVariable(final Variable var) {
-        if (isReservedName(var.getName())) {
-            throw new IllegalArgumentException("variable [" + var.getName() + "] is already defined");
+        if (isReservedName(var.getName()) || isVarDefinedInScope(var)) {
+            throw new IllegalArgumentException("symbol [" + var.getName() + "] is already defined");
         }
         variables.add(var);
     }

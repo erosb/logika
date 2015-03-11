@@ -13,6 +13,8 @@ public interface SymbolTable {
         }
     }
 
+    public boolean isReservedName(String name);
+
     public Predicate predicateByName(String name);
 
     public default boolean predicateExists(final String name) {

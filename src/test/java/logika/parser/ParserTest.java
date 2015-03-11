@@ -24,7 +24,7 @@ public class ParserTest {
 
     @Test
     public void quantifiedVarTypesAreInferredOnFirstOccurence() {
-        recognitionException("all(x, P2(x, x)", "param #1 of P2: expected type: Type2, actual type: Type1");
+        recognitionException("all(x, P2(x, x))", "param #1 of P2: expected type: Type2, actual type: Type1");
     }
 
     @Test
@@ -35,6 +35,11 @@ public class ParserTest {
     @Test
     public void quantifiersWork() {
         subject("all(x, P1(x, y))").recognize();
+    }
+
+    @Test
+    public void quantifierVarShouldNotBeReserved() {
+        recognitionException("all(P1, P2(P1, x))", "symbol [P1] is already defined");
     }
 
     private void recognitionException(final String input, final String expectedMessage) {

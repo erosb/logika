@@ -81,8 +81,11 @@ public class Parser {
             if (qualifVar.getType() != TokenType.ID) {
                 throw new RecognitionException("expected ID, was: " + qualifVar);
             }
-            isReserved(qualifVar.getText());
-            currScope.registerVariable(new Variable(qualifVar.getText(), null));
+            try {
+                currScope.registerVariable(new Variable(qualifVar.getText(), null));
+            } catch (IllegalArgumentException e) {
+                throw new RecognitionException(e.getMessage());
+            }
             consume(COMMA);
             recognizeFormula();
             consume(RPAREN);
