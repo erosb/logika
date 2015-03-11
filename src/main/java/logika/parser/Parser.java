@@ -42,20 +42,6 @@ public class Parser {
         }
     }
 
-    private void isReserved(final String tokenText) {
-        if (lang.termExists(tokenText)) {
-            throw new RecognitionException("symbol " + tokenText + " is a term, cannot be used as variable");
-        }
-        if (lang.predicateExists(tokenText)) {
-            throw new RecognitionException("symbol " + tokenText
-                    + " is a predicate, cannot be used as variable");
-        }
-        if (lang.constantExists(tokenText)) {
-            throw new RecognitionException("symbol " + tokenText
-                    + " is a constant, cannot be used as variable");
-        }
-    }
-
     public String recognize() {
         recognizeFormula();
         return "";
@@ -77,10 +63,7 @@ public class Parser {
         } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
             currScope = new ScopingSymbolTable(currScope);
             consume(LPAREN);
-            Token qualifVar = lexer.nextToken();
-            if (qualifVar.getType() != TokenType.ID) {
-                throw new RecognitionException("expected ID, was: " + qualifVar);
-            }
+            Token qualifVar = requireId();
             try {
                 currScope.registerVariable(new Variable(qualifVar.getText(), null));
             } catch (IllegalArgumentException e) {
@@ -94,10 +77,7 @@ public class Parser {
     }
 
     private void recognizeParam(final String ownerName, final int paramIdx, final Type expectedType) {
-        Token token = lexer.nextToken();
-        if (token == null || token.getType() != TokenType.ID) {
-            throw new RecognitionException("expected ID, was: " + token);
-        }
+        Token token = requireId();
         Token lookahead = lexer.nextToken();
         lexer.pushBack(lookahead);
         String tokenText = token.getText();
@@ -170,5 +150,13 @@ public class Parser {
         recognizeFormula();
         consume(RPAREN);
 
+    }
+
+    private Token requireId() {
+        Token token = lexer.nextToken();
+        if (token == null || !token.getType().equals(TokenType.ID)) {
+            throw new RecognitionException("expected ID, was: " + token);
+        }
+        return token;
     }
 }
