@@ -26,11 +26,11 @@ public interface SymbolTable {
         }
     }
 
-    public Term termByName(String termName);
+    public Function functionByName(String fnName);
 
-    public default boolean termExists(final String term) {
+    public default boolean functionExists(final String fnName) {
         try {
-            termByName(term);
+            functionByName(fnName);
             return true;
         } catch (IllegalArgumentException e) {
             return false;

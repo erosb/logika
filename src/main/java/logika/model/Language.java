@@ -11,18 +11,18 @@ public class Language implements SymbolTable {
 
     private final Set<Predicate> predicates;
 
-    private final Set<Term> terms;
+    private final Set<Function> functions;
 
     public Language() {
         this(new HashSet<Type>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
     }
 
     public Language(final Set<Type> types, final Set<Constant> constants, final Set<Predicate> predicates,
-            final Set<Term> terms) {
+            final Set<Function> functions) {
         this.types = types;
         this.constants = constants;
         this.predicates = predicates;
-        this.terms = terms;
+        this.functions = functions;
     }
 
     @Override
@@ -36,24 +36,38 @@ public class Language implements SymbolTable {
         return constants.stream().filter((c) -> c.getName().equals(name)).count() == 1;
     }
 
+    @Override
+    public Function functionByName(final String fnName) {
+        return functions.stream()
+                .filter((t) -> t.getName().equals(fnName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("function [" + fnName + "] not found"));
+    }
+
+    @Override
+    public boolean functionExists(final String fnName) {
+        return functions.stream().filter((t) -> t.getName().equals(fnName)).count() == 1;
+    }
+
     public Set<Constant> getConstants() {
         return constants;
+    }
+
+    public Set<Function> getFunctions() {
+        return functions;
     }
 
     public Set<Predicate> getPredicates() {
         return predicates;
     }
 
-    public Set<Term> getTerms() {
-        return terms;
-    }
-
     public Set<Type> getTypes() {
         return types;
     }
 
+    @Override
     public boolean isReservedName(final String name) {
-        return constantExists(name) || termExists(name) || predicateExists(name);
+        return constantExists(name) || functionExists(name) || predicateExists(name);
     }
 
     @Override
@@ -67,19 +81,6 @@ public class Language implements SymbolTable {
     @Override
     public boolean predicateExists(final String text) {
         return predicates.stream().filter((p) -> p.getName().equals(text)).count() == 1;
-    }
-
-    @Override
-    public Term termByName(final String termName) {
-        return terms.stream()
-                .filter((t) -> t.getName().equals(termName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("term [" + termName + "] not found"));
-    }
-
-    @Override
-    public boolean termExists(final String term) {
-        return terms.stream().filter((t) -> t.getName().equals(term)).count() == 1;
     }
 
     @Override

@@ -23,18 +23,18 @@
 		</predicate>
 	</predicates>
 	
-	<terms>
-		<term name="f" type="Type1">
+	<functions>
+		<function name="f" type="Type1">
 			<arg type="Type1" />
 			<arg type="Type2" />
-		</term>
-		<term name="g" type="Type2">
+		</function>
+		<function name="g" type="Type2">
 			<arg type="Type1" />
 			<arg type="Type3" />
 			<arg type="Type3" />
-		</term>
-		<term name="h" type="Type1">
+		</function>
+		<function name="h" type="Type1">
 			<arg type="Type1" />
-		</term>
-	</terms>
+		</function>
+	</functions>
 </language>

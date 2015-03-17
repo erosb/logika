@@ -5,7 +5,7 @@ import java.util.Set;
 import logika.model.Constant;
 import logika.model.Language;
 import logika.model.Predicate;
-import logika.model.Term;
+import logika.model.Function;
 import logika.model.Type;
 import logika.model.XMLLoader;
 
@@ -44,10 +44,10 @@ public class XMLLoaderTest {
     }
     
     @Test
-    public void termsLoaded() {
+    public void functionsLoaded() {
         Language lang = load("/lang1.xml");
-        Set<Term> terms = lang.getTerms();
-        Assert.assertEquals(3, terms.size());
+        Set<Function> functions = lang.getFunctions();
+        Assert.assertEquals(3, functions.size());
     }
 
 }

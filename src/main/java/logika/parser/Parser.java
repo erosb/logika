@@ -3,10 +3,10 @@ package logika.parser;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import logika.model.Function;
 import logika.model.Language;
 import logika.model.Predicate;
 import logika.model.ScopingSymbolTable;
-import logika.model.Term;
 import logika.model.Type;
 import logika.model.Variable;
 import logika.model.XMLLoader;
@@ -83,7 +83,7 @@ public class Parser {
         String tokenText = token.getText();
         Type actualType;
         if (lookahead.getType() == TokenType.LPAREN) {
-            actualType = recognizeTerm(tokenText);
+            actualType = recognizeFunction(tokenText);
         } else {
             if (currScope.constantExists(tokenText)) {
                 actualType = lang.constantByName(tokenText).getType();
@@ -124,22 +124,22 @@ public class Parser {
         return "";
     }
 
-    private Type recognizeTerm(final String termName) {
+    private Type recognizeFunction(final String functionName) {
         try {
-            Term term = lang.termByName(termName);
+            Function function = lang.functionByName(functionName);
             consume(LPAREN);
             int i = 0;
-            for (Type type : term.getArgTypes()) {
+            for (Type type : function.getArgTypes()) {
                 if (i != 0) {
                     consume(COMMA);
                 }
-                recognizeParam(termName, i, type);
+                recognizeParam(functionName, i, type);
                 ++i;
             }
             consume(RPAREN);
-            return term.getType();
+            return function.getType();
         } catch (IllegalArgumentException e) {
-            throw new RecognitionException("term " + termName + " not found");
+            throw new RecognitionException("function " + functionName + " not found");
         }
     }
 

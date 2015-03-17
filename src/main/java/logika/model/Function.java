@@ -2,7 +2,7 @@ package logika.model;
 
 import java.util.List;
 
-public class Term {
+public class Function {
     
     private final String name;
     
@@ -10,7 +10,7 @@ public class Term {
     
     private final Type type;
     
-    public Term(String name, List<Type> argTypes, Type type) {
+    public Function(String name, List<Type> argTypes, Type type) {
         this.name = name;
         this.argTypes = argTypes;
         this.type = type;
