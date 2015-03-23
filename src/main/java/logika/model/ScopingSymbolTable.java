@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import logika.parser.TokenType;
+
 public class ScopingSymbolTable extends Language {
 
     private final SymbolTable parentScope;
@@ -68,6 +70,11 @@ public class ScopingSymbolTable extends Language {
     }
 
     @Override
+    public boolean isBinaryOperator(final TokenType tokenType) {
+        return parentScope.isBinaryOperator(tokenType);
+    }
+
+    @Override
     public boolean isReservedName(final String name) {
         return parentScope.isReservedName(name);
     }
@@ -106,6 +113,11 @@ public class ScopingSymbolTable extends Language {
         Variable rval = new Variable(varName, type);
         variables.add(rval);
         return rval;
+    }
+
+    @Override
+    public Type typeByName(final String typeName) {
+        return parentScope.typeByName(typeName);
     }
 
     @Override

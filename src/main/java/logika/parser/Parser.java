@@ -67,9 +67,7 @@ public class Parser {
         TokenType tokenType = token.getType();
         if (token.getType() == TokenType.ID) {
             return recognizePredicate(token.getText());
-        } else if (tokenType == TokenType.AND
-                || tokenType == TokenType.OR
-                || tokenType == TokenType.IMPL) {
+        } else if (currScope.isBinaryOperator(tokenType)) {
             return recognizeTwoFormulas(tokenType);
         } else if (tokenType == TokenType.NOT) {
             consume(LPAREN);

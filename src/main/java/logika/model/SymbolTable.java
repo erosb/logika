@@ -1,5 +1,7 @@
 package logika.model;
 
+import logika.parser.TokenType;
+
 public interface SymbolTable {
 
     public Constant constantByName(String name);
@@ -24,6 +26,8 @@ public interface SymbolTable {
         }
     }
 
+    public boolean isBinaryOperator(TokenType tokenType);
+
     public boolean isReservedName(String name);
 
     public Predicate predicateByName(String name);
@@ -36,6 +40,8 @@ public interface SymbolTable {
             return false;
         }
     }
+
+    public Type typeByName(String typeName);
 
     public Variable varByName(String varName);
 

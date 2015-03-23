@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import logika.parser.TokenType;
+
 public class Language implements SymbolTable {
 
     private final Set<Type> types;
@@ -67,6 +69,11 @@ public class Language implements SymbolTable {
     }
 
     @Override
+    public boolean isBinaryOperator(final TokenType tokenType) {
+        return tokenType == TokenType.AND || tokenType == TokenType.OR || tokenType == TokenType.IMPL;
+    }
+
+    @Override
     public boolean isReservedName(final String name) {
         return constantExists(name) || functionExists(name) || predicateExists(name);
     }
@@ -82,6 +89,11 @@ public class Language implements SymbolTable {
     @Override
     public boolean predicateExists(final String text) {
         return predicates.stream().filter((p) -> p.getName().equals(text)).count() == 1;
+    }
+
+    public Type typeByName(final String typeName) {
+        return types.stream().filter((t) -> t.getName().equals(typeName)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("type [" + typeName + "] not found"));
     }
 
     @Override
