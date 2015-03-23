@@ -1,5 +1,7 @@
 package logika.model;
 
+import java.util.Objects;
+
 public class Variable {
 
     private final String name;
@@ -7,8 +9,8 @@ public class Variable {
     private final Type type;
 
     public Variable(final String name, final Type type) {
-        this.name = name;
-        this.type = type;
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.type = Objects.requireNonNull(type, "type cannot be null");
     }
 
     public String getName() {

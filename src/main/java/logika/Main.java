@@ -25,13 +25,11 @@ public class Main {
         } else {
             langStream = Main.class.getResourceAsStream("/lang1.xml");
         }
-        String output;
         try {
-            output = Parser.forString(input, langStream).recognize();
+            Parser.forString(input, langStream).recognize();
         } catch (RecognitionException | LexerException e) {
-            output = e.getMessage();
+            System.out.println(e.getMessage());
         }
-        System.out.println(output);
     }
 
 }

@@ -5,6 +5,12 @@ import org.junit.Test;
 
 public class ScopingSymbolTableTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void declareVarShouldBeNamingConflictAware() {
+        ScopingSymbolTable subject = symbolTable();
+        subject.declareVar("P1");
+    }
+
     @Test
     public void getVarFromParentScope() {
         ScopingSymbolTable parent = symbolTable();
@@ -37,10 +43,10 @@ public class ScopingSymbolTableTest {
         return new Variable(name, new Type(typeName));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void varTypeChangeShouldWorkOnlyOnce() {
         ScopingSymbolTable subject = symbolTable();
-        subject.registerVariable(new Variable("x", null));
+        subject.declareVar("x");
         Type newType = new Type("Type1");
         subject.setVarType("x", newType);
         Assert.assertEquals(newType, subject.varByName("x").getType());

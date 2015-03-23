@@ -13,6 +13,17 @@ public interface SymbolTable {
         }
     }
 
+    public Function functionByName(String fnName);
+
+    public default boolean functionExists(final String fnName) {
+        try {
+            functionByName(fnName);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     public boolean isReservedName(String name);
 
     public Predicate predicateByName(String name);
@@ -26,18 +37,9 @@ public interface SymbolTable {
         }
     }
 
-    public Function functionByName(String fnName);
-
-    public default boolean functionExists(final String fnName) {
-        try {
-            functionByName(fnName);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
     public Variable varByName(String varName);
+
+    boolean varDeclared(String varName);
 
     public default boolean varExists(final String varName) {
         try {

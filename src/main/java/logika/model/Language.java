@@ -1,5 +1,6 @@
 package logika.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,10 +20,10 @@ public class Language implements SymbolTable {
 
     public Language(final Set<Type> types, final Set<Constant> constants, final Set<Predicate> predicates,
             final Set<Function> functions) {
-        this.types = types;
-        this.constants = constants;
-        this.predicates = predicates;
-        this.functions = functions;
+        this.types = Collections.unmodifiableSet(types);
+        this.constants = Collections.unmodifiableSet(constants);
+        this.predicates = Collections.unmodifiableSet(predicates);
+        this.functions = Collections.unmodifiableSet(functions);
     }
 
     @Override
@@ -86,6 +87,11 @@ public class Language implements SymbolTable {
     @Override
     public Variable varByName(final String varName) {
         throw new IllegalArgumentException("variable [" + varName + "] not found");
+    }
+
+    @Override
+    public boolean varDeclared(final String varName) {
+        return false;
     }
 
 }

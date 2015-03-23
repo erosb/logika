@@ -2,7 +2,10 @@ package logika.parser;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import logika.model.Constant;
 import logika.model.Function;
 import logika.model.Language;
 import logika.model.Predicate;
@@ -10,11 +13,24 @@ import logika.model.ScopingSymbolTable;
 import logika.model.Type;
 import logika.model.Variable;
 import logika.model.XMLLoader;
+import logika.model.ast.ConstantNode;
+import logika.model.ast.FormulaNode;
+import logika.model.ast.FunctionNode;
+import logika.model.ast.PredicateNode;
+import logika.model.ast.QuantifierNode;
+import logika.model.ast.QuantifierNode.Quantifier;
+import logika.model.ast.TermNode;
+import logika.model.ast.UnaryOpNode;
+import logika.model.ast.VarNode;
 
 public class Parser {
 
     public static final Parser forString(final String str, final InputStream langFile) {
-        return new Parser(new Lexer(new StringReader(str + " ")), new XMLLoader(langFile).load());
+        return forString(str, new XMLLoader(langFile).load());
+    }
+
+    public static final Parser forString(final String str, final Language lang) {
+        return new Parser(new Lexer(new StringReader(str + " ")), lang);
     }
 
     private static final Token LPAREN = new Token(TokenType.LPAREN, "(");
@@ -42,105 +58,121 @@ public class Parser {
         }
     }
 
-    public String recognize() {
-        recognizeFormula();
-        return "";
+    public FormulaNode recognize() {
+        return recognizeFormula();
     }
 
-    private void recognizeFormula() {
+    private FormulaNode recognizeFormula() {
         Token token = lexer.nextToken();
         TokenType tokenType = token.getType();
         if (token.getType() == TokenType.ID) {
-            recognizePredicate(token.getText());
+            return recognizePredicate(token.getText());
         } else if (tokenType == TokenType.AND
                 || tokenType == TokenType.OR
                 || tokenType == TokenType.IMPL) {
             recognizeTwoFormulas();
         } else if (tokenType == TokenType.NOT) {
             consume(LPAREN);
-            recognizeFormula();
+            FormulaNode arg = recognizeFormula();
             consume(RPAREN);
+            return new UnaryOpNode(arg);
         } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
             currScope = new ScopingSymbolTable(currScope);
             consume(LPAREN);
             Token qualifVar = requireId();
             try {
-                currScope.registerVariable(new Variable(qualifVar.getText(), null));
+                currScope.declareVar(qualifVar.getText());
             } catch (IllegalArgumentException e) {
                 throw new RecognitionException(e.getMessage());
             }
             consume(COMMA);
-            recognizeFormula();
+            FormulaNode arg = recognizeFormula();
             consume(RPAREN);
             currScope = (ScopingSymbolTable) currScope.getParentScope();
+            Quantifier q = tokenType == TokenType.ALL ? Quantifier.ALL : Quantifier.ANY;
+            return new QuantifierNode(q, arg);
+        }
+        return null;
+    }
+
+    private FunctionNode recognizeFunction(final String functionName) {
+        try {
+            Function function = lang.functionByName(functionName);
+            List<TermNode> arguments = recognizeParamList(functionName, function.getArgTypes());
+            return new FunctionNode(function, arguments);
+        } catch (IllegalArgumentException e) {
+            throw new RecognitionException("function " + functionName + " not found");
         }
     }
 
-    private void recognizeParam(final String ownerName, final int paramIdx, final Type expectedType) {
+    private TermNode recognizeParam(final String ownerName, final int paramIdx, final Type expectedType) {
         Token token = requireId();
         Token lookahead = lexer.nextToken();
         lexer.pushBack(lookahead);
         String tokenText = token.getText();
-        Type actualType;
+        Type actualType = null;
+        TermNode rval;
         if (lookahead.getType() == TokenType.LPAREN) {
-            actualType = recognizeFunction(tokenText);
+            rval = recognizeFunction(tokenText);
         } else {
             if (currScope.constantExists(tokenText)) {
-                actualType = lang.constantByName(tokenText).getType();
+                Constant constant = lang.constantByName(tokenText);
+                rval = new ConstantNode(constant);
+            } else if (currScope.varDeclared(tokenText)) {
+                Variable var = currScope.setVarType(tokenText, expectedType);
+                actualType = expectedType;
+                rval = new VarNode(var);
             } else if (currScope.varExists(tokenText)) {
-                actualType = currScope.varByName(tokenText).getType();
+                Variable var = currScope.varByName(tokenText);
+                actualType = var.getType();
                 if (actualType == null) {
-                    currScope.setVarType(tokenText, expectedType);
+                    var = currScope.setVarType(tokenText, expectedType);
                     actualType = expectedType;
                 }
+                rval = new VarNode(var);
             } else {
-                currScope.registerVariable(new Variable(tokenText, expectedType));
+                Variable var = new Variable(tokenText, expectedType);
+                rval = new VarNode(var);
+                currScope.registerVariable(var);
                 actualType = expectedType;
             }
+        }
+        if (actualType == null) {
+            actualType = rval.getType();
         }
         if (!actualType.equals(expectedType)) {
             throw new RecognitionException("param #" + paramIdx + " of " + ownerName + ": expected type: "
                     + expectedType.getName() + ", actual type: " + actualType.getName());
         }
+        return rval;
     }
 
-    private String recognizePredicate(final String predName) {
+    private List<TermNode> recognizeParamList(final String ownerName, final List<Type> argTypes) {
         consume(LPAREN);
+        int i = 0;
+        List<TermNode> arguments = new ArrayList<>(argTypes.size());
+        for (Type t : argTypes) {
+            if (i != 0) {
+                consume(COMMA);
+            }
+            arguments.add(recognizeParam(ownerName, i, t));
+            ++i;
+        }
+        consume(RPAREN);
+        return arguments;
+    }
+
+    private PredicateNode recognizePredicate(final String predName) {
         Predicate pred;
         try {
             pred = lang.predicateByName(predName);
         } catch (IllegalArgumentException e) {
             throw new RecognitionException(predName + " is not a predicate");
         }
-        int i = 0;
-        for (Type t : pred.getArgTypes()) {
-            if (i != 0) {
-                consume(COMMA);
-            }
-            recognizeParam(predName, i, t);
-            ++i;
-        }
-        consume(RPAREN);
-        return "";
-    }
-
-    private Type recognizeFunction(final String functionName) {
-        try {
-            Function function = lang.functionByName(functionName);
-            consume(LPAREN);
-            int i = 0;
-            for (Type type : function.getArgTypes()) {
-                if (i != 0) {
-                    consume(COMMA);
-                }
-                recognizeParam(functionName, i, type);
-                ++i;
-            }
-            consume(RPAREN);
-            return function.getType();
-        } catch (IllegalArgumentException e) {
-            throw new RecognitionException("function " + functionName + " not found");
-        }
+        List<Type> argTypes = pred.getArgTypes();
+        List<TermNode> arguments = recognizeParamList(predName, argTypes);
+        PredicateNode rval = new PredicateNode(pred, arguments);
+        return rval;
     }
 
     private void recognizeTwoFormulas() {
