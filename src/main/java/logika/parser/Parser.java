@@ -13,12 +13,12 @@ import logika.model.ScopingSymbolTable;
 import logika.model.Type;
 import logika.model.Variable;
 import logika.model.XMLLoader;
+import logika.model.ast.BinaryOpNode;
 import logika.model.ast.ConstantNode;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.FunctionNode;
 import logika.model.ast.PredicateNode;
 import logika.model.ast.QuantifierNode;
-import logika.model.ast.QuantifierNode.Quantifier;
 import logika.model.ast.TermNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
@@ -70,7 +70,7 @@ public class Parser {
         } else if (tokenType == TokenType.AND
                 || tokenType == TokenType.OR
                 || tokenType == TokenType.IMPL) {
-            recognizeTwoFormulas();
+            return recognizeTwoFormulas(tokenType);
         } else if (tokenType == TokenType.NOT) {
             consume(LPAREN);
             FormulaNode arg = recognizeFormula();
@@ -88,11 +88,17 @@ public class Parser {
             consume(COMMA);
             FormulaNode arg = recognizeFormula();
             consume(RPAREN);
-            currScope = (ScopingSymbolTable) currScope.getParentScope();
-            Quantifier q = tokenType == TokenType.ALL ? Quantifier.ALL : Quantifier.ANY;
-            return new QuantifierNode(q, arg);
+            try {
+                Variable quantifiedVar = currScope.varByName(qualifVar.getText());
+                return new QuantifierNode(tokenType, quantifiedVar, arg);
+            } catch (IllegalArgumentException e) {
+                return arg;
+            } finally {
+                currScope = (ScopingSymbolTable) currScope.getParentScope();
+            }
+        } else {
+            throw new RecognitionException("unknown token " + token);
         }
-        return null;
     }
 
     private FunctionNode recognizeFunction(final String functionName) {
@@ -175,12 +181,13 @@ public class Parser {
         return rval;
     }
 
-    private void recognizeTwoFormulas() {
+    private FormulaNode recognizeTwoFormulas(final TokenType tokenType) {
         consume(LPAREN);
-        recognizeFormula();
+        FormulaNode left = recognizeFormula();
         consume(COMMA);
-        recognizeFormula();
+        FormulaNode right = recognizeFormula();
         consume(RPAREN);
+        return new BinaryOpNode(tokenType, left, right);
 
     }
 

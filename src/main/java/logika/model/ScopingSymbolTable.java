@@ -72,10 +72,6 @@ public class ScopingSymbolTable extends Language {
         return parentScope.isReservedName(name);
     }
 
-    private boolean isVarDefinedInScope(final Variable var) {
-        return variables.stream().filter((v) -> v.getName().equals(var.getName())).findFirst().isPresent();
-    }
-
     @Override
     public Predicate predicateByName(final String name) {
         return parentScope.predicateByName(name);
@@ -87,7 +83,7 @@ public class ScopingSymbolTable extends Language {
     }
 
     public void registerVariable(final Variable var) {
-        if (isReservedName(var.getName()) || isVarDefinedInScope(var)) {
+        if (isReservedName(var.getName()) || varExists(var.getName())) {
             throw new IllegalArgumentException("symbol [" + var.getName() + "] is already defined");
         }
         variables.add(var);

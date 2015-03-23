@@ -2,6 +2,7 @@ package logika.parser;
 
 import logika.model.Language;
 import logika.model.XMLLoader;
+import logika.model.ast.BinaryOpNode;
 import logika.model.ast.ConstantNode;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.PredicateNode;
@@ -29,6 +30,18 @@ public class ASTBuildingTest {
     }
 
     @Test
+    public void binaryOpFormula() {
+        FormulaNode output = parse("and(impl(P1(y, y), P2(C1, x)), all(x, not(P1(x, x))))");
+        Assert.assertTrue(output instanceof BinaryOpNode);
+    }
+
+    @Test
+    public void fictiveQuantifiedFormula() {
+        FormulaNode output = parse("all(x, P1(C1, y))");
+        Assert.assertTrue(output instanceof PredicateNode);
+    }
+
+    @Test
     public void negatedPredicate() {
         FormulaNode output = parse("not(P1(C1, x))");
         Assert.assertTrue(output instanceof UnaryOpNode);
@@ -51,6 +64,7 @@ public class ASTBuildingTest {
         Assert.assertTrue(output instanceof QuantifierNode);
         QuantifierNode actual = (QuantifierNode) output;
         Assert.assertTrue(actual.getSubformula() instanceof PredicateNode);
+        Assert.assertEquals("x", actual.getQuantifiedVar().getName());
     }
 
     @Test
