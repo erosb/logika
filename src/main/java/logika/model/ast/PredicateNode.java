@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import logika.model.Predicate;
+import logika.model.ast.visitor.NodeVisitor;
 
 public class PredicateNode extends FormulaNode {
 
@@ -17,6 +18,11 @@ public class PredicateNode extends FormulaNode {
         super(new ArrayList<Node>(arguments));
         this.predicate = Objects.requireNonNull(predicate, "predicate cannot be null");
         this.arguments = Collections.unmodifiableList(Objects.requireNonNull(arguments, "arguments cannot be null"));
+    }
+
+    @Override
+    public <R> R accept(final NodeVisitor<R> visitor) {
+        return visitor.visitPredicate(this);
     }
 
     public TermNode getArgument(final int i) {

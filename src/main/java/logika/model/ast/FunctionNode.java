@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import logika.model.Function;
+import logika.model.ast.visitor.NodeVisitor;
 
 public class FunctionNode extends TermNode {
 
@@ -17,6 +18,11 @@ public class FunctionNode extends TermNode {
         super(Objects.requireNonNull(function, "function cannot be null").getType(), new ArrayList<Node>(arguments));
         this.function = function;
         this.arguments = Collections.unmodifiableList(Objects.requireNonNull(arguments, "arguments cannot be null"));
+    }
+
+    @Override
+    public <R> R accept(final NodeVisitor<R> visitor) {
+        return visitor.visitFunction(this);
     }
 
     public TermNode getArg(final int i) {

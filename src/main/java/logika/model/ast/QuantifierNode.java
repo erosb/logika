@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import logika.model.Variable;
+import logika.model.ast.visitor.NodeVisitor;
 import logika.parser.TokenType;
 
 public class QuantifierNode extends FormulaNode {
@@ -19,6 +20,11 @@ public class QuantifierNode extends FormulaNode {
         this.quantifier = Objects.requireNonNull(quantifier, "quantifier cannot be null");
         this.quantifiedVar = Objects.requireNonNull(quantifiedVar, "quantifiedVar cannot be null");
         this.subformula = Objects.requireNonNull(subformula, "subformula cannot be null");
+    }
+
+    @Override
+    public <R> R accept(final NodeVisitor<R> visitor) {
+        return visitor.visitQuantifier(this);
     }
 
     public Variable getQuantifiedVar() {

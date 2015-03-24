@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import logika.model.Type;
 
-public class TermNode extends Node {
+public abstract class TermNode extends Node {
 
     private final Type type;
 
