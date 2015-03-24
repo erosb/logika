@@ -24,12 +24,4 @@ public abstract class Node {
         return children.isEmpty();
     }
 
-    private <R> R visitChildren(final NodeVisitor<R> visitor) {
-        R rval = visitor.identity();
-        for (Node child : children) {
-            rval = visitor.accumulate(rval, child.accept(visitor));
-        }
-        return rval;
-    }
-
 }
