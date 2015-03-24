@@ -77,9 +77,9 @@ public class Parser {
         } else if (tokenType == TokenType.ALL || tokenType == TokenType.ANY) {
             currScope = new ScopingSymbolTable(currScope);
             consume(LPAREN);
-            Token qualifVar = requireId();
+            Token quantifVar = requireId();
             try {
-                currScope.declareVar(qualifVar.getText());
+                currScope.declareVar(quantifVar.getText());
             } catch (IllegalArgumentException e) {
                 throw new RecognitionException(e.getMessage());
             }
@@ -87,7 +87,7 @@ public class Parser {
             FormulaNode arg = recognizeFormula();
             consume(RPAREN);
             try {
-                Variable quantifiedVar = currScope.varByName(qualifVar.getText());
+                Variable quantifiedVar = currScope.varByName(quantifVar.getText());
                 return new QuantifierNode(tokenType, quantifiedVar, arg);
             } catch (IllegalArgumentException e) {
                 return arg;
