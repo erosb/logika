@@ -1,5 +1,6 @@
 package logika.model.ast;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import logika.model.Variable;
@@ -14,6 +15,7 @@ public class QuantifierNode extends FormulaNode {
     private final FormulaNode subformula;
 
     public QuantifierNode(final TokenType quantifier, final Variable quantifiedVar, final FormulaNode subformula) {
+        super(Arrays.asList(subformula));
         this.quantifier = Objects.requireNonNull(quantifier, "quantifier cannot be null");
         this.quantifiedVar = Objects.requireNonNull(quantifiedVar, "quantifiedVar cannot be null");
         this.subformula = Objects.requireNonNull(subformula, "subformula cannot be null");

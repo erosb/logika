@@ -1,5 +1,6 @@
 package logika.model.ast;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class UnaryOpNode extends FormulaNode {
@@ -13,6 +14,7 @@ public class UnaryOpNode extends FormulaNode {
     private final FormulaNode subformula;
 
     public UnaryOpNode(final FormulaNode subformula) {
+        super(Arrays.asList(subformula));
         this.subformula = Objects.requireNonNull(subformula, "subformula cannot be null");
     }
 

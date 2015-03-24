@@ -1,5 +1,6 @@
 package logika.model.ast;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import logika.parser.TokenType;
@@ -13,6 +14,7 @@ public class BinaryOpNode extends FormulaNode {
     private final FormulaNode right;
 
     public BinaryOpNode(final TokenType operator, final FormulaNode left, final FormulaNode right) {
+        super(Arrays.asList(left, right));
         this.operator = Objects.requireNonNull(operator, "operator cannot be null");
         this.left = Objects.requireNonNull(left, "left cannot be null");
         this.right = Objects.requireNonNull(right, "right cannot be null");

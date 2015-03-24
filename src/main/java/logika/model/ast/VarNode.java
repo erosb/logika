@@ -1,5 +1,6 @@
 package logika.model.ast;
 
+import java.util.Collections;
 import java.util.Objects;
 
 import logika.model.Variable;
@@ -9,7 +10,7 @@ public class VarNode extends TermNode {
     private final Variable var;
 
     public VarNode(final Variable var) {
-        super(Objects.requireNonNull(var, "var cannot be null").getType());
+        super(Objects.requireNonNull(var, "var cannot be null").getType(), Collections.emptyList());
         this.var = var;
     }
 
