@@ -88,7 +88,8 @@ public class Parser {
             consume(RPAREN);
             try {
                 Variable quantifiedVar = currScope.varByName(quantifVar.getText());
-                return new QuantifierNode(tokenType, quantifiedVar, arg);
+                VarNode varNode = new VarNode(quantifiedVar);
+                return new QuantifierNode(tokenType, varNode, arg);
             } catch (IllegalArgumentException e) {
                 return arg;
             } finally {

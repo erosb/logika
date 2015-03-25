@@ -4,14 +4,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
+import logika.parser.TokenType;
 
 public class UnaryOpNode extends FormulaNode {
 
-    public static enum UnaryOperator {
-        NOT
-    }
-
-    private final UnaryOperator operator = UnaryOperator.NOT;
+    private final TokenType operator = TokenType.NOT;
 
     private final FormulaNode subformula;
 
@@ -25,7 +22,7 @@ public class UnaryOpNode extends FormulaNode {
         return visitor.visitUnaryOperator(this);
     }
 
-    public UnaryOperator getOperator() {
+    public TokenType getOperator() {
         return operator;
     }
 

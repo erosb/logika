@@ -26,7 +26,7 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
         return visitChildren(node);
     }
 
-    private R visitChildren(final Node node) {
+    protected R visitChildren(final Node node) {
         return node.getChildren().stream()
                 .map((n) -> n.accept(this))
                 .reduce(identity(), this::accumulate);

@@ -64,7 +64,7 @@ public class ASTBuildingTest {
         Assert.assertTrue(output instanceof QuantifierNode);
         QuantifierNode actual = (QuantifierNode) output;
         Assert.assertTrue(actual.getSubformula() instanceof PredicateNode);
-        Assert.assertEquals("x", actual.getQuantifiedVar().getName());
+        Assert.assertEquals("x", actual.getQuantifiedVar().getVar().getName());
     }
 
     @Test
