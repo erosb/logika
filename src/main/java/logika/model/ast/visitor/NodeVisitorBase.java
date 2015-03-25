@@ -11,12 +11,10 @@ import logika.model.ast.VarNode;
 
 public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
-    @Override
     public R accumulate(final R previous, final R current) {
         return current;
     }
 
-    @Override
     public R identity() {
         return null;
     }

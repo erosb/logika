@@ -10,22 +10,18 @@ import logika.model.ast.VarNode;
 
 public interface NodeVisitor<R> {
 
-    public R accumulate(R previous, R current);
+    public <E extends R> E visitBinaryOperator(BinaryOpNode node);
 
-    public R identity();
+    public <E extends R> E visitConstant(ConstantNode node);
 
-    public R visitBinaryOperator(BinaryOpNode node);
+    public <E extends R> E visitFunction(FunctionNode node);
 
-    public R visitConstant(ConstantNode node);
+    public <E extends R> E visitPredicate(PredicateNode node);
 
-    public R visitFunction(FunctionNode node);
+    public <E extends R> E visitQuantifier(QuantifierNode node);
 
-    public R visitPredicate(PredicateNode node);
+    public <E extends R> E visitUnaryOperator(UnaryOpNode node);
 
-    public R visitQuantifier(QuantifierNode node);
-
-    public R visitUnaryOperator(UnaryOpNode node);
-
-    public R visitVar(VarNode node);
+    public <E extends R> E visitVar(VarNode node);
 
 }
