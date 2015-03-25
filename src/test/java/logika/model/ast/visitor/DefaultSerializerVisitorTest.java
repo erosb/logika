@@ -3,13 +3,10 @@ package logika.model.ast.visitor;
 import java.util.Arrays;
 import java.util.List;
 
-import logika.model.Language;
-import logika.model.XMLLoader;
+import logika.model.TestSupport;
 import logika.model.ast.Node;
-import logika.parser.Parser;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,26 +27,17 @@ public class DefaultSerializerVisitorTest {
                 );
     }
 
-    private Language lang;
-
     private final String inputStr;
+
+    private final TestSupport testSupport = TestSupport.forLang1();
 
     public DefaultSerializerVisitorTest(final String inputStr) {
         this.inputStr = inputStr;
     }
 
-    @Before
-    public void before() {
-        lang = new XMLLoader(getClass().getResourceAsStream("/lang1.xml")).load();
-    }
-
-    private Node parse(final String input) {
-        return Parser.forString(input, lang).recognize();
-    }
-
     @Test
     public void serializePredWithVars() {
-        Node input = parse(inputStr);
+        Node input = testSupport.parse(inputStr);
         Assert.assertEquals(inputStr, new DefaultSerializerVisitor().serialize(input));
     }
 

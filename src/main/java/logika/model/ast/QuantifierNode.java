@@ -30,6 +30,10 @@ public class QuantifierNode extends FormulaNode {
         return quantifiedVar;
     }
 
+    public String getQuantifiedVarName() {
+        return quantifiedVar.getVar().getName();
+    }
+
     public TokenType getQuantifier() {
         return quantifier;
     }
