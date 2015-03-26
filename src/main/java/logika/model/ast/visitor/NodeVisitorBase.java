@@ -2,10 +2,12 @@ package logika.model.ast.visitor;
 
 import logika.model.ast.BinaryOpNode;
 import logika.model.ast.ConstantNode;
+import logika.model.ast.FormulaNode;
 import logika.model.ast.FunctionNode;
 import logika.model.ast.Node;
 import logika.model.ast.PredicateNode;
 import logika.model.ast.QuantifierNode;
+import logika.model.ast.TermNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
 
@@ -36,6 +38,11 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
     }
 
     @Override
+    public R visitFormula(final FormulaNode node) {
+        return visitChildren(node);
+    }
+
+    @Override
     public R visitFunction(final FunctionNode node) {
         return visitChildren(node);
     }
@@ -47,6 +54,11 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
     @Override
     public R visitQuantifier(final QuantifierNode node) {
+        return visitChildren(node);
+    }
+
+    @Override
+    public R visitTerm(final TermNode node) {
         return visitChildren(node);
     }
 

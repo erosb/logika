@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import logika.model.ast.FormulaNode;
 import logika.model.ast.Node;
+import logika.model.ast.visitor.DefaultSerializerVisitor;
 import logika.parser.Parser;
 
 public class TestSupport {
@@ -16,6 +17,10 @@ public class TestSupport {
 
     public TestSupport(final Language lang) {
         this.lang = Objects.requireNonNull(lang, "lang cannot be null");
+    }
+
+    public String asString(final Node node) {
+        return new DefaultSerializerVisitor().serialize(node);
     }
 
     public Language lang() {

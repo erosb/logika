@@ -1,6 +1,7 @@
 package logika.model.ast;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
@@ -19,6 +20,13 @@ public class BinaryOpNode extends FormulaNode {
         this.operator = Objects.requireNonNull(operator, "operator cannot be null");
         this.left = Objects.requireNonNull(left, "left cannot be null");
         this.right = Objects.requireNonNull(right, "right cannot be null");
+    }
+
+    public BinaryOpNode(final TokenType operator, final List<FormulaNode> subformulas) {
+        this(operator, subformulas.get(0), subformulas.get(1));
+        if (subformulas.size() != 2) {
+            throw new IllegalArgumentException("BinaryOpNode has exactly 2 subformulas, got " + subformulas.size());
+        }
     }
 
     @Override
