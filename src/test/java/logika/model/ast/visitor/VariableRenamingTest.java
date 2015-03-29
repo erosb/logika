@@ -20,7 +20,8 @@ public class VariableRenamingTest {
         return Arrays.<Object[]> asList(
                 new Object[] { "P1(x, y)", "y", "z", "P1(x, z)" },
                 new Object[] { "P1(x, f(x, y))", "y", "z", "P1(x, f(x, z))" },
-                new Object[] { "any(y, P1(x, y))", "y", "z", "any(y, P1(x, y))" }
+                new Object[] { "any(y, P1(x, y))", "y", "z", "any(y, P1(x, y))" },
+                new Object[] { "any(z, P1(y, z))", "y", "z", "any(z, P1(y, z))" }
                 );
     }
 

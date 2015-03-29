@@ -24,7 +24,8 @@ public class VariableRenaming extends TreeRewriterBase {
 
     @Override
     public QuantifierNode visitQuantifier(final QuantifierNode node) {
-        if (node.getQuantifiedVarName().equals(renameFrom)) {
+        String quantifVar = node.getQuantifiedVarName();
+        if (quantifVar.equals(renameFrom) || quantifVar.equals(renameTo)) {
             return node;
         }
         return super.visitQuantifier(node);
