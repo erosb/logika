@@ -19,7 +19,7 @@ public class DeMorgan {
                 FormulaNode andLeft = visitFormula(subformula.getSubformula(0));
                 FormulaNode andRight = visitFormula(subformula.getSubformula(1));
                 Token resultOp = isAnd ? Token.or() : Token.and();
-                return new BinaryOpNode(resultOp, new UnaryOpNode(andLeft), new UnaryOpNode(andRight));
+                return new BinaryOpNode(resultOp, andLeft.negate(), andRight.negate());
             }
             return super.visitUnaryOperator(node);
         }

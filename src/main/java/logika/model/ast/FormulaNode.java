@@ -27,12 +27,24 @@ public abstract class FormulaNode extends Node {
         }
     }
 
+    public BinaryOpNode and(final FormulaNode right) {
+        return new BinaryOpNode(Token.and(), this, right);
+    }
+
     public FormulaNode getSubformula(final int idx) {
         return subformulas.get(idx);
     }
 
     public List<FormulaNode> getSubformulas() {
         return subformulas;
+    }
+
+    public UnaryOpNode negate() {
+        return new UnaryOpNode(this);
+    }
+
+    public BinaryOpNode or(final FormulaNode right) {
+        return new BinaryOpNode(Token.or(), this, right);
     }
 
 }
