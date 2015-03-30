@@ -15,8 +15,8 @@ public class ImplicationEliminator extends TreeRewriterBase {
     @Override
     public FormulaNode visitBinaryOperator(final BinaryOpNode node) {
         if (node.is(TokenType.IMPL)) {
-            FormulaNode resultLeft = new UnaryOpNode(node.getLeft());
-            FormulaNode resultRight = node.getRight();
+            FormulaNode resultLeft = new UnaryOpNode(visitFormula(node.getLeft()));
+            FormulaNode resultRight = visitFormula(node.getRight());
             return new BinaryOpNode(Token.or(), resultLeft, resultRight);
         }
         return super.visitBinaryOperator(node);
@@ -26,8 +26,8 @@ public class ImplicationEliminator extends TreeRewriterBase {
     public FormulaNode visitUnaryOperator(final UnaryOpNode node) {
         FormulaNode subformula = node.getSubformula();
         if (subformula.is(TokenType.IMPL)) {
-            FormulaNode leftResult = subformula.getSubformula(0);
-            FormulaNode rightResult = new UnaryOpNode(subformula.getSubformula(1));
+            FormulaNode leftResult = visitFormula(subformula.getSubformula(0));
+            FormulaNode rightResult = new UnaryOpNode(visitFormula(subformula.getSubformula(1)));
             return new BinaryOpNode(Token.and(), leftResult, rightResult);
         }
         return super.visitUnaryOperator(node);
