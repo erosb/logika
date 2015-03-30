@@ -18,7 +18,8 @@ public class ImplicationEliminatorTest {
     @Parameters
     public static final List<Object[]> params() {
         return Arrays.<Object[]> asList(
-                new Object[] { "impl(P1(x, x), P1(x, y))", "or(not(P1(x, x)), P1(x, y))" }
+                new Object[] { "impl(P1(x, x), P1(x, y))", "or(not(P1(x, x)), P1(x, y))" },
+                new Object[] { "not(impl(P1(x, x), P1(x, y)))", "and(P1(x, x), not(P1(x, y)))" }
                 );
     }
 
