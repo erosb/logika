@@ -1,5 +1,7 @@
 package logika.model.ast.visitor.impl;
 
+import java.util.Objects;
+
 import logika.model.ast.BinaryOpNode;
 import logika.model.ast.ConstantNode;
 import logika.model.ast.FunctionNode;
@@ -25,7 +27,7 @@ public class DefaultSerializerVisitor extends NodeVisitorBase<String> {
     }
 
     public String serialize(final Node input) {
-        return input.accept(this);
+        return Objects.requireNonNull(input, "input cannot be null").accept(this);
     }
 
     @Override
