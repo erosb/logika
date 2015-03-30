@@ -4,10 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import logika.model.TestSupport;
-import logika.model.ast.FormulaNode;
-import logika.model.ast.visitor.impl.rewriter.VariableRenaming;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,8 +31,6 @@ public class VariableRenamingTest {
 
     private final String expected;
 
-    private final TestSupport testSupport = TestSupport.forLang1();
-
     public VariableRenamingTest(final String input, final String renameFrom, final String renameTo,
             final String expected) {
         this.input = input;
@@ -46,8 +41,8 @@ public class VariableRenamingTest {
 
     @Test
     public void test() {
-        FormulaNode input = testSupport.parseFormula(this.input);
-        FormulaNode actual = VariableRenaming.rename(input, renameFrom, renameTo);
-        Assert.assertEquals(expected, testSupport.asString(actual));
+        TestSupport.forLang1()
+                .testRewriter((in) -> VariableRenaming.rename(in, renameFrom, renameTo))
+                .with(input, expected);
     }
 }
