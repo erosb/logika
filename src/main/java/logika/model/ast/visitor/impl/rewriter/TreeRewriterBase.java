@@ -1,4 +1,4 @@
-package logika.model.ast.visitor;
+package logika.model.ast.visitor.impl.rewriter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import logika.model.ast.QuantifierNode;
 import logika.model.ast.TermNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
+import logika.model.ast.visitor.NodeVisitorBase;
 
 public class TreeRewriterBase extends NodeVisitorBase<Node> {
 

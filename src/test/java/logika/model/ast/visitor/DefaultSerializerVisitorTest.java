@@ -5,6 +5,7 @@ import java.util.List;
 
 import logika.model.TestSupport;
 import logika.model.ast.Node;
+import logika.model.ast.visitor.impl.DefaultSerializerVisitor;
 
 import org.junit.Assert;
 import org.junit.Test;

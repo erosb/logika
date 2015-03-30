@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import logika.model.ast.FormulaNode;
 import logika.model.ast.Node;
-import logika.model.ast.visitor.DefaultSerializerVisitor;
+import logika.model.ast.visitor.impl.DefaultSerializerVisitor;
 import logika.parser.Parser;
 
 public class TestSupport {

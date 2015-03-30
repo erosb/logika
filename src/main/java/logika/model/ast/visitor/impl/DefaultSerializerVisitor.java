@@ -1,4 +1,4 @@
-package logika.model.ast.visitor;
+package logika.model.ast.visitor.impl;
 
 import logika.model.ast.BinaryOpNode;
 import logika.model.ast.ConstantNode;
@@ -8,6 +8,7 @@ import logika.model.ast.PredicateNode;
 import logika.model.ast.QuantifierNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
+import logika.model.ast.visitor.NodeVisitorBase;
 
 public class DefaultSerializerVisitor extends NodeVisitorBase<String> {
 

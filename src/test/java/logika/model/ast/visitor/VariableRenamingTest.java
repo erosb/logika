@@ -5,6 +5,7 @@ import java.util.List;
 
 import logika.model.TestSupport;
 import logika.model.ast.FormulaNode;
+import logika.model.ast.visitor.impl.rewriter.VariableRenaming;
 
 import org.junit.Assert;
 import org.junit.Test;
