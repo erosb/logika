@@ -1,4 +1,4 @@
-package logika.model.ast.visitor;
+package logika.model.ast.visitor.impl;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,10 +1,11 @@
-package logika.model.ast.visitor;
+package logika.model.ast.visitor.impl;
 
 import java.util.Objects;
 
 import logika.model.ast.Node;
 import logika.model.ast.QuantifierNode;
 import logika.model.ast.VarNode;
+import logika.model.ast.visitor.NodeVisitorBase;
 
 public class FreeVarDetector extends NodeVisitorBase<Boolean> {
 

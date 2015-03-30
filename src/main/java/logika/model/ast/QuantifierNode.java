@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
+import logika.parser.Token;
 import logika.parser.TokenType;
 
 public class QuantifierNode extends FormulaNode {
@@ -14,9 +15,10 @@ public class QuantifierNode extends FormulaNode {
 
     private final FormulaNode subformula;
 
-    public QuantifierNode(final TokenType quantifier, final VarNode quantifiedVar, final FormulaNode subformula) {
-        super(Arrays.asList(quantifiedVar, subformula));
-        this.quantifier = Objects.requireNonNull(quantifier, "quantifier cannot be null");
+    public QuantifierNode(final Token token, final VarNode quantifiedVar,
+            final FormulaNode subformula) {
+        super(token, Arrays.asList(quantifiedVar, subformula));
+        this.quantifier = token.getType();
         this.quantifiedVar = Objects.requireNonNull(quantifiedVar, "quantifiedVar cannot be null");
         this.subformula = Objects.requireNonNull(subformula, "subformula cannot be null");
     }

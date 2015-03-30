@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
+import logika.parser.Token;
 import logika.parser.TokenType;
 
 public class UnaryOpNode extends FormulaNode {
@@ -13,7 +14,7 @@ public class UnaryOpNode extends FormulaNode {
     private final FormulaNode subformula;
 
     public UnaryOpNode(final FormulaNode subformula) {
-        super(Arrays.asList(subformula));
+        super(new Token(TokenType.NOT, "not"), Arrays.asList(subformula));
         this.subformula = Objects.requireNonNull(subformula, "subformula cannot be null");
     }
 

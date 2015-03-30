@@ -68,7 +68,7 @@ public class Parser {
         if (token.getType() == TokenType.ID) {
             return recognizePredicate(token.getText());
         } else if (currScope.isBinaryOperator(tokenType)) {
-            return recognizeTwoFormulas(tokenType);
+            return recognizeTwoFormulas(token);
         } else if (tokenType == TokenType.NOT) {
             consume(LPAREN);
             FormulaNode arg = recognizeFormula();
@@ -89,7 +89,7 @@ public class Parser {
             try {
                 Variable quantifiedVar = currScope.varByName(quantifVar.getText());
                 VarNode varNode = new VarNode(quantifiedVar);
-                return new QuantifierNode(tokenType, varNode, arg);
+                return new QuantifierNode(token, varNode, arg);
             } catch (IllegalArgumentException e) {
                 return arg;
             } finally {
@@ -100,11 +100,12 @@ public class Parser {
         }
     }
 
-    private FunctionNode recognizeFunction(final String functionName) {
+    private FunctionNode recognizeFunction(final Token functionNameToken) {
+        String functionName = functionNameToken.getText();
         try {
             Function function = lang.functionByName(functionName);
             List<TermNode> arguments = recognizeParamList(functionName, function.getArgTypes());
-            return new FunctionNode(function, arguments);
+            return new FunctionNode(functionNameToken, function, arguments);
         } catch (IllegalArgumentException e) {
             throw new RecognitionException("function " + functionName + " not found");
         }
@@ -118,11 +119,11 @@ public class Parser {
         Type actualType = null;
         TermNode rval;
         if (lookahead.getType() == TokenType.LPAREN) {
-            rval = recognizeFunction(tokenText);
+            rval = recognizeFunction(token);
         } else {
             if (currScope.constantExists(tokenText)) {
                 Constant constant = lang.constantByName(tokenText);
-                rval = new ConstantNode(constant);
+                rval = new ConstantNode(token, constant);
             } else if (currScope.varDeclared(tokenText)) {
                 Variable var = currScope.setVarType(tokenText, expectedType);
                 actualType = expectedType;
@@ -180,13 +181,13 @@ public class Parser {
         return rval;
     }
 
-    private FormulaNode recognizeTwoFormulas(final TokenType tokenType) {
+    private FormulaNode recognizeTwoFormulas(final Token token) {
         consume(LPAREN);
         FormulaNode left = recognizeFormula();
         consume(COMMA);
         FormulaNode right = recognizeFormula();
         consume(RPAREN);
-        return new BinaryOpNode(tokenType, left, right);
+        return new BinaryOpNode(token, left, right);
 
     }
 

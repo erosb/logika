@@ -1,10 +1,11 @@
-package logika.model.ast.visitor;
+package logika.model.ast.visitor.impl;
 
 import java.util.Arrays;
 import java.util.List;
 
 import logika.model.TestSupport;
 import logika.model.ast.Node;
+import logika.model.ast.visitor.impl.FreeVarDetector;
 
 import org.junit.Assert;
 import org.junit.Test;

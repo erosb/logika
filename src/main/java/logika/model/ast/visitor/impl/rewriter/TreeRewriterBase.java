@@ -34,13 +34,13 @@ public class TreeRewriterBase extends NodeVisitorBase<Node> {
     }
 
     @Override
-    public BinaryOpNode visitBinaryOperator(final BinaryOpNode node) {
+    public FormulaNode visitBinaryOperator(final BinaryOpNode node) {
         FormulaNode leftOrig = node.getLeft();
         FormulaNode leftResult = this.visitFormula(leftOrig);
         FormulaNode rightOrig = node.getRight();
         FormulaNode rightResult = this.visitFormula(rightOrig);
         if (!(leftOrig == leftResult && rightOrig == rightResult)) {
-            return new BinaryOpNode(node.getOperator(), leftResult, rightResult);
+            return new BinaryOpNode(node.getToken(), leftResult, rightResult);
         }
         return node;
     }
@@ -72,13 +72,13 @@ public class TreeRewriterBase extends NodeVisitorBase<Node> {
         List<TermNode> origArgs = node.getArguments();
         List<TermNode> argResults = visitArgList(origArgs);
         if (argResults != origArgs) {
-            return new FunctionNode(node.getFunction(), argResults);
+            return new FunctionNode(node.getToken(), node.getFunction(), argResults);
         }
         return node;
     }
 
     @Override
-    public PredicateNode visitPredicate(final PredicateNode node) {
+    public FormulaNode visitPredicate(final PredicateNode node) {
         List<TermNode> origArgs = node.getArguments();
         List<TermNode> argResults = visitArgList(origArgs);
         if (argResults != origArgs) {
@@ -91,7 +91,7 @@ public class TreeRewriterBase extends NodeVisitorBase<Node> {
     public QuantifierNode visitQuantifier(final QuantifierNode node) {
         FormulaNode subformulaResult = visitFormula(node.getSubformula());
         if (subformulaResult != node.getSubformula()) {
-            return new QuantifierNode(node.getQuantifier(), node.getQuantifiedVar(), subformulaResult);
+            return new QuantifierNode(node.getToken(), node.getQuantifiedVar(), subformulaResult);
         }
         return node;
     }
@@ -111,7 +111,7 @@ public class TreeRewriterBase extends NodeVisitorBase<Node> {
     }
 
     @Override
-    public UnaryOpNode visitUnaryOperator(final UnaryOpNode node) {
+    public FormulaNode visitUnaryOperator(final UnaryOpNode node) {
         FormulaNode subformulaResult = visitFormula(node.getSubformula());
         if (subformulaResult != node.getSubformula()) {
             return new UnaryOpNode(subformulaResult);
@@ -120,7 +120,7 @@ public class TreeRewriterBase extends NodeVisitorBase<Node> {
     }
 
     @Override
-    public VarNode visitVar(final VarNode node) {
+    public TermNode visitVar(final VarNode node) {
         return node;
     }
 

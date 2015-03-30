@@ -5,13 +5,16 @@ import java.util.Objects;
 
 import logika.model.Variable;
 import logika.model.ast.visitor.NodeVisitor;
+import logika.parser.Token;
+import logika.parser.TokenType;
 
 public class VarNode extends TermNode {
 
     private final Variable var;
 
     public VarNode(final Variable var) {
-        super(Objects.requireNonNull(var, "var cannot be null").getType(), Collections.emptyList());
+        super(new Token(TokenType.ID, var.getName()), Objects.requireNonNull(var, "var cannot be null").getType(),
+                Collections.emptyList());
         this.var = var;
     }
 

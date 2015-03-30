@@ -5,13 +5,17 @@ import java.util.Objects;
 
 import logika.model.Constant;
 import logika.model.ast.visitor.NodeVisitor;
+import logika.parser.Token;
+import logika.parser.TokenType;
 
 public class ConstantNode extends TermNode {
 
     private final Constant constant;
 
-    public ConstantNode(final Constant constant) {
-        super(Objects.requireNonNull(constant, "constant cannot be null").getType(), Collections.emptyList());
+    public ConstantNode(final Token token, final Constant constant) {
+        super(new Token(TokenType.ID, Objects.requireNonNull(constant.getName(), "constant cannot be null")),
+                constant.getType(),
+                Collections.emptyList());
         this.constant = constant;
     }
 
