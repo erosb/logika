@@ -3,6 +3,7 @@ package logika.parser;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import logika.model.Constant;
@@ -176,7 +177,12 @@ public class Parser {
             throw new RecognitionException(predName + " is not a predicate");
         }
         List<Type> argTypes = pred.getArgTypes();
-        List<TermNode> arguments = recognizeParamList(predName, argTypes);
+        List<TermNode> arguments;
+        if (argTypes.isEmpty()) {
+            arguments = Collections.emptyList();
+        } else {
+            arguments = recognizeParamList(predName, argTypes);
+        }
         PredicateNode rval = new PredicateNode(pred, arguments);
         return rval;
     }

@@ -18,6 +18,11 @@ public class ParserTest {
     }
 
     @Test
+    public void parameterlessFormulaTest() {
+        subject("and(P, Q)").recognize();
+    }
+
+    @Test
     public void predicateNotFound() {
         recognitionException("Z(x)", "Z is not a predicate");
     }
