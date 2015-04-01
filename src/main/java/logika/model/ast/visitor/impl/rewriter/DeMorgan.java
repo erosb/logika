@@ -16,12 +16,16 @@ public class DeMorgan {
             boolean isAnd = subformula.is(TokenType.AND);
             boolean isOr = subformula.is(TokenType.OR);
             if (isAnd || isOr) {
-                FormulaNode andLeft = visitFormula(subformula.getSubformula(0));
-                FormulaNode andRight = visitFormula(subformula.getSubformula(1));
+                FormulaNode resultLeft = visitFormula(subformula.getSubformula(0));
+                FormulaNode resultRight = visitFormula(subformula.getSubformula(1));
                 Token resultOp = isAnd ? Token.or() : Token.and();
-                return new BinaryOpNode(resultOp, andLeft.negate(), andRight.negate());
+                BinaryOpNode rval = new BinaryOpNode(resultOp,
+                        visitFormula(resultLeft.negate()),
+                        visitFormula(resultRight.negate()));
+                return rval;
+            } else {
+                return DuplicateNegationEliminator.eliminate(node);
             }
-            return super.visitUnaryOperator(node);
         }
 
     }

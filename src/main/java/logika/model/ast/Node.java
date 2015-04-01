@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
+import logika.model.ast.visitor.impl.DefaultSerializerVisitor;
 import logika.parser.Token;
 import logika.parser.TokenType;
 
@@ -28,13 +29,18 @@ public abstract class Node {
     public Token getToken() {
         return token;
     }
-    
-    public boolean is(TokenType tokenType) {
+
+    public boolean is(final TokenType tokenType) {
         return token.getType() == tokenType;
     }
 
     public boolean isTerminal() {
         return children.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return accept(new DefaultSerializerVisitor());
     }
 
 }
