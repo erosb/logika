@@ -2,8 +2,16 @@ package logika.parser;
 
 public class Token {
 
+    public static Token all() {
+        return new Token(TokenType.ALL, "all");
+    }
+
     public static Token and() {
         return new Token(TokenType.AND, "and");
+    }
+
+    public static Token any() {
+        return new Token(TokenType.ANY, "any");
     }
 
     public static Token not() {
