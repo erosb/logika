@@ -1,5 +1,8 @@
 package logika.parser;
 
+import logika.model.ast.FormulaNode;
+import logika.model.ast.QuantifierNode;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,6 +13,13 @@ public class ParserTest {
         subject("and(P1(x, y), P2(u, v))").recognize();
         subject("or(P1(x, y), P2(u, v))").recognize();
         subject("impl(P1(x, y), P2(u, v))").recognize();
+    }
+
+    @Test
+    public void nestedQuantifiersWork() {
+        FormulaNode result = subject("and(all(x, all(y, P1(x, y))), all(x, all(y, P1(x, y))))").recognize();
+        QuantifierNode xAllForm = (QuantifierNode) result.getSubformula(0);
+        Assert.assertEquals("x", xAllForm.getQuantifiedVarName());
     }
 
     @Test

@@ -91,6 +91,12 @@ public class Language implements SymbolTable {
         return predicates.stream().filter((p) -> p.getName().equals(text)).count() == 1;
     }
 
+    @Override
+    public Variable setVarType(final String varName, final Type type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Type typeByName(final String typeName) {
         return types.stream().filter((t) -> t.getName().equals(typeName)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("type [" + typeName + "] not found"));

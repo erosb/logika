@@ -96,6 +96,7 @@ public class ScopingSymbolTable extends Language {
         variables.add(var);
     }
 
+    @Override
     public Variable setVarType(final String varName, final Type type) {
         Iterator<String> varIt = declaredVarNames.iterator();
         boolean found = false;
@@ -108,11 +109,12 @@ public class ScopingSymbolTable extends Language {
             }
         }
         if (!found) {
-            throw new IllegalArgumentException("variable [" + varName + "] not found");
+            return parentScope.setVarType(varName, type);
+        } else {
+            Variable rval = new Variable(varName, type);
+            variables.add(rval);
+            return rval;
         }
-        Variable rval = new Variable(varName, type);
-        variables.add(rval);
-        return rval;
     }
 
     @Override
@@ -129,7 +131,7 @@ public class ScopingSymbolTable extends Language {
 
     @Override
     public boolean varDeclared(final String varName) {
-        return declaredVarNames.contains(varName);
+        return declaredVarNames.contains(varName) || parentScope.varDeclared(varName);
     }
 
 }

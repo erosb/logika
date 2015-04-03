@@ -41,6 +41,8 @@ public interface SymbolTable {
         }
     }
 
+    public Variable setVarType(final String varName, final Type type);
+
     public Type typeByName(String typeName);
 
     public Variable varByName(String varName);
