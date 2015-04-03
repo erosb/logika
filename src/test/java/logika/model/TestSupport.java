@@ -8,8 +8,6 @@ import logika.model.ast.Node;
 import logika.model.ast.visitor.impl.DefaultSerializerVisitor;
 import logika.parser.Parser;
 
-import org.junit.Assert;
-
 public class TestSupport {
 
     public class RewriterTestSupport {
@@ -23,7 +21,9 @@ public class TestSupport {
         private void testWith(final String input, final String expectedOutput) {
             FormulaNode in = parseFormula(input);
             FormulaNode actual = subject.apply(in);
-            Assert.assertEquals(expectedOutput, asString(actual));
+            if (!expectedOutput.equals(asString(actual))) {
+                throw new AssertionError("expected: " + expectedOutput + "\tactual: " + asString(actual));
+            }
         }
 
         public RewriterTestSupport with(final String input, final String expectedOutput) {
