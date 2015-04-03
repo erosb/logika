@@ -15,7 +15,6 @@ public class QuantifierRemover extends TreeRewriterBase {
 
     @Override
     public FormulaNode visitBinaryOperator(final BinaryOpNode node) {
-        System.out.println("visiting binary " + node);
         if (node.is(TokenType.AND)) {
             FormulaNode left = node.getLeft();
             FormulaNode right = node.getRight();
@@ -24,13 +23,13 @@ public class QuantifierRemover extends TreeRewriterBase {
                 QuantifierNode qRight = (QuantifierNode) right;
                 String leftQuantifVar = qLeft.getQuantifiedVarName();
                 String rightQuantifVar = qRight.getQuantifiedVarName();
-                System.out.println("left: " + qLeft + " right: " + qRight);
                 if (!leftQuantifVar.equals(rightQuantifVar)) {
                     qRight = new QuantifierNode(qRight.getToken(), qLeft.getQuantifiedVar(),
                             VariableRenaming.rename(qRight.getSubformula(), rightQuantifVar, leftQuantifVar));
                 }
-                return new QuantifierNode(Token.all(), (VarNode) left.getChildren().get(0),
+                QuantifierNode result = new QuantifierNode(Token.all(), (VarNode) left.getChildren().get(0),
                         new BinaryOpNode(Token.and(), qLeft.getSubformula(), qRight.getSubformula()));
+                return visitFormula(result);
             }
         }
         return super.visitBinaryOperator(node);
