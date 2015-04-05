@@ -40,7 +40,7 @@ public class CleanVarConverter extends TreeRewriterBase {
         do {
             rval = baseStr + i;
             ++i;
-        } while (reservedNames.contains(rval));
+        } while (reservedNames.contains(rval) || FreeVarDetector.hasFreeVar(input, rval));
         return rval;
     }
 
