@@ -1,6 +1,5 @@
 package logika.model.ast.visitor.impl.rewriter;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -8,7 +7,7 @@ import logika.model.Variable;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.QuantifierNode;
 import logika.model.ast.VarNode;
-import logika.model.ast.visitor.impl.FreeVarDetector;
+import logika.model.ast.visitor.impl.FreeVarCollector;
 
 public class CleanVarConverter extends TreeRewriterBase {
 
@@ -16,12 +15,13 @@ public class CleanVarConverter extends TreeRewriterBase {
         return new CleanVarConverter(input).visitFormula(input);
     }
 
-    private final Set<String> reservedNames = new HashSet<>();
+    private final Set<String> reservedNames;
 
     private final FormulaNode input;
 
     public CleanVarConverter(final FormulaNode input) {
         this.input = Objects.requireNonNull(input, "input cannot be null");
+        this.reservedNames = FreeVarCollector.collect(input);
     }
 
     private String suggestReplacementFor(final String original) {
@@ -40,15 +40,14 @@ public class CleanVarConverter extends TreeRewriterBase {
         do {
             rval = baseStr + i;
             ++i;
-        } while (reservedNames.contains(rval) || FreeVarDetector.hasFreeVar(input, rval));
+        } while (reservedNames.contains(rval));
         return rval;
     }
 
     @Override
     public QuantifierNode visitQuantifier(final QuantifierNode node) {
         String varName = node.getQuantifiedVarName();
-        if (reservedNames.contains(varName)
-                || FreeVarDetector.hasFreeVar(input, varName)) {
+        if (reservedNames.contains(varName)) {
             String newName = suggestReplacementFor(varName);
             FormulaNode resultSub = VariableRenaming.rename(node.getSubformula(), varName, newName);
             resultSub = visitFormula(resultSub);
