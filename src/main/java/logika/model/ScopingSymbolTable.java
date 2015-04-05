@@ -14,6 +14,8 @@ public class ScopingSymbolTable extends Language {
 
     private final Set<String> declaredVarNames = new HashSet<>();
 
+    private final Set<String> alreadyTypedVarNames = new HashSet<>();
+
     public ScopingSymbolTable(final SymbolTable parentScope) {
         this.parentScope = parentScope;
     }
@@ -98,6 +100,9 @@ public class ScopingSymbolTable extends Language {
 
     @Override
     public Variable setVarType(final String varName, final Type type) {
+        if (alreadyTypedVarNames.contains(varName)) {
+            throw new IllegalArgumentException("the type of variable [" + varName + "] is already defined");
+        }
         Iterator<String> varIt = declaredVarNames.iterator();
         boolean found = false;
         while (varIt.hasNext()) {
@@ -113,6 +118,7 @@ public class ScopingSymbolTable extends Language {
         } else {
             Variable rval = new Variable(varName, type);
             variables.add(rval);
+            alreadyTypedVarNames.add(varName);
             return rval;
         }
     }
