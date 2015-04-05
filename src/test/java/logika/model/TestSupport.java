@@ -1,5 +1,7 @@
 package logika.model;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -37,6 +39,25 @@ public class TestSupport {
             }
         }
 
+    }
+
+    public static final <E> void assertCollectionEquals(final Collection<E> expected, final Collection<E> actual) {
+        if (expected.size() != actual.size()) {
+            throw new AssertionError("expected " + expected.size() + " elements, actual: " + actual.size());
+        }
+        Iterator<E> actIt = actual.iterator();
+        for (E expItem : expected) {
+            if (!actIt.hasNext()) {
+                throw new AssertionError();
+            }
+            E actItem = actIt.next();
+            if (!expItem.equals(actItem)) {
+                throw new AssertionError("expected element: " + expItem + ", actual element: " + actItem);
+            }
+        }
+        if (actIt.hasNext()) {
+            throw new AssertionError();
+        }
     }
 
     public static final TestSupport forLang1() {
