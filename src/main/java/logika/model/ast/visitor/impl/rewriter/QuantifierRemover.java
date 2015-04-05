@@ -27,6 +27,10 @@ public class QuantifierRemover extends TreeRewriterBase {
         return visitFormula(result);
     }
 
+    private boolean isQuantifier(final FormulaNode left) {
+        return left.is(TokenType.ANY) || left.is(TokenType.ALL);
+    }
+
     private QuantifierNode toSameQuantifVarName(final QuantifierNode left, final QuantifierNode right) {
         String leftQuantifVar = left.getQuantifiedVarName();
         String rightQuantifVar = right.getQuantifiedVarName();
@@ -41,10 +45,13 @@ public class QuantifierRemover extends TreeRewriterBase {
     public FormulaNode visitBinaryOperator(final BinaryOpNode node) {
         FormulaNode left = node.getLeft();
         FormulaNode right = node.getRight();
+        boolean isAndOr = node.is(TokenType.AND) || node.is(TokenType.OR);
         if (node.is(TokenType.AND) && left.is(TokenType.ALL) && right.is(TokenType.ALL)) {
             return extractUniversalQuantifierFromConjunction((QuantifierNode) left, (QuantifierNode) right);
         } else if (node.is(TokenType.OR) && left.is(TokenType.ANY) && right.is(TokenType.ANY)) {
             return extractExistentialQuantifierFromDisjunction((QuantifierNode) left, (QuantifierNode) right);
+        } else if (isAndOr && isQuantifier(left)) {
+
         }
         return super.visitBinaryOperator(node);
     }
