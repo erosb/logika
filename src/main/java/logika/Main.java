@@ -34,6 +34,9 @@ public class Main {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print(PROMPT);
             while ((line = in.readLine()) != null) {
+                if (line.charAt(0) == '#') {
+                    continue;
+                }
                 String[] segments = line.split(" ");
                 String arg;
                 if (segments[0].equals(CMD_PARSE)) {
@@ -56,10 +59,12 @@ public class Main {
                 } else if (lastCommand.equalsIgnoreCase(CMD_PRENEX)) {
                     prenexize(arg, lang);
                 } else if (lastCommand.equals("exit") || lastCommand.equals("q")) {
+                    System.out.println();
                     System.exit(0);
                 }
                 System.out.print(PROMPT);
             }
+            System.out.println();
         } catch (IOException e1) {
             throw new RuntimeException(e1);
         }

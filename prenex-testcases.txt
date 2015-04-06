@@ -1,0 +1,7 @@
+prenex or(any(x, all(y, P1(x, y))), any(x, all(y, P2(x, y))))
+impl(any(x, all(y, P1(x, y))), any(x, all(y, P2(x, y))))
+not(impl(any(x, all(y, not(P1(x, y)))), all(y, any(y, P2(x, y)))))
+impl(any(x, or(all(y, P1(x, y)), any(z, P3(z)))), any(x, P3(x)))
+impl(all(x, impl(any(y, P1(x, y)), all(x, P3(x)))), all(x, any(y, P1(x, y))))
+all(x, any(y, impl(and(P1(x, y), P3(y)), any(y, and(P3(y), P1(x, y))))))
+impl(all(x, and(any(y, P1(x, y)), any(y, not(impl(P3(y), P1(x, a)))))), not(all(x, any(y, impl(P2(y, x), P4(x, y))))))
