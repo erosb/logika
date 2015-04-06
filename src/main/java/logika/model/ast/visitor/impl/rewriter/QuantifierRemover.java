@@ -3,6 +3,7 @@ package logika.model.ast.visitor.impl.rewriter;
 import logika.model.ast.BinaryOpNode;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.QuantifierNode;
+import logika.model.ast.visitor.impl.FreeVarDetector;
 import logika.parser.Token;
 import logika.parser.TokenType;
 
@@ -42,7 +43,7 @@ public class QuantifierRemover extends TreeRewriterBase {
     }
 
     @Override
-    public FormulaNode visitBinaryOperator(final BinaryOpNode node) {
+    public FormulaNode visitBinaryOperator(BinaryOpNode node) {
         FormulaNode left = node.getLeft();
         FormulaNode right = node.getRight();
         boolean isAndOr = node.is(TokenType.AND) || node.is(TokenType.OR);
@@ -50,8 +51,30 @@ public class QuantifierRemover extends TreeRewriterBase {
             return extractUniversalQuantifierFromConjunction((QuantifierNode) left, (QuantifierNode) right);
         } else if (node.is(TokenType.OR) && left.is(TokenType.ANY) && right.is(TokenType.ANY)) {
             return extractExistentialQuantifierFromDisjunction((QuantifierNode) left, (QuantifierNode) right);
-        } else if (isAndOr && isQuantifier(left)) {
-
+        } else if (isAndOr) {
+            FormulaNode rval;
+            if (isQuantifier(left)) {
+                QuantifierNode qLeft = (QuantifierNode) left;
+                String quantifVar = qLeft.getQuantifiedVarName();
+                if (FreeVarDetector.hasFreeVar(right, quantifVar)) {
+                    node = (BinaryOpNode) CleanVarConverter.clean(node);
+                    qLeft = (QuantifierNode) node.getLeft();
+                }
+                rval = new QuantifierNode(qLeft.getToken(), qLeft.getQuantifiedVar(), new BinaryOpNode(node.getToken(),
+                        qLeft.getSubformula(), right));
+            } else if (isQuantifier(right)) {
+                QuantifierNode qRight = (QuantifierNode) right;
+                String quantifVar = qRight.getQuantifiedVarName();
+                if (FreeVarDetector.hasFreeVar(left, quantifVar)) {
+                    node = (BinaryOpNode) CleanVarConverter.clean(node);
+                    qRight = (QuantifierNode) node.getRight();
+                }
+                rval = new QuantifierNode(qRight.getToken(), qRight.getQuantifiedVar(),
+                        new BinaryOpNode(node.getToken(), left, qRight.getSubformula()));
+            } else {
+                return super.visitBinaryOperator(node);
+            }
+            return visitFormula(rval);
         }
         return super.visitBinaryOperator(node);
     }
