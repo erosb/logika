@@ -28,7 +28,7 @@ public class DeMorgan {
                 return rval;
             } else if (isAll || isAny) {
                 QuantifierNode qSub = (QuantifierNode) subformula;
-                FormulaNode resultSub = visitFormula(subformula.getSubformula(0)).negate();
+                FormulaNode resultSub = visitFormula(subformula.getSubformula(0).negate());
                 Token resultOp = isAll ? Token.any() : Token.all();
                 QuantifierNode rval = new QuantifierNode(resultOp, qSub.getQuantifiedVar(), resultSub);
                 return rval;

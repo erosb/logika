@@ -26,6 +26,11 @@
 			<arg type="Type1" />
 		</predicate>
 		
+		<predicate name="P4">
+			<arg type="Type2" />
+			<arg type="Type1" />
+		</predicate>
+		
 		<predicate name="P"></predicate>
 		<predicate name="Q"></predicate>
 		<predicate name="R"></predicate>

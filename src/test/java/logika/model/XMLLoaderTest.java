@@ -29,7 +29,7 @@ public class XMLLoaderTest {
     public void predicatesLoaded() {
         Language actual = load("/lang1.xml");
         Set<Predicate> loadedPredicates = actual.getPredicates();
-        Assert.assertEquals(7, loadedPredicates.size());
+        Assert.assertEquals(8, loadedPredicates.size());
         Assert.assertEquals(2, actual.predicateByName("P1").getArgTypes().size());
     }
 

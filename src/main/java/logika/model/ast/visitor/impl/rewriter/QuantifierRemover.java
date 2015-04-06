@@ -10,7 +10,13 @@ import logika.parser.TokenType;
 public class QuantifierRemover extends TreeRewriterBase {
 
     public static FormulaNode moveQuantifiersUp(final FormulaNode input) {
-        return new QuantifierRemover().visitFormula(input);
+        QuantifierRemover remover = new QuantifierRemover();
+        // FormulaNode prev, actual = input;
+        // do {
+        // prev = actual;
+        // actual = remover.visitFormula(prev);
+        // } while (actual != prev);
+        return remover.visitFormula(input);
     }
 
     private FormulaNode extractExistentialQuantifierFromDisjunction(final QuantifierNode left,
@@ -59,7 +65,10 @@ public class QuantifierRemover extends TreeRewriterBase {
                 if (FreeVarDetector.hasFreeVar(right, quantifVar)) {
                     node = (BinaryOpNode) CleanVarConverter.clean(node);
                     qLeft = (QuantifierNode) node.getLeft();
+                    right = node.getRight();
                 }
+                qLeft = visitQuantifier(qLeft);
+                right = visitFormula(right);
                 rval = new QuantifierNode(qLeft.getToken(), qLeft.getQuantifiedVar(), new BinaryOpNode(node.getToken(),
                         qLeft.getSubformula(), right));
             } else if (isQuantifier(right)) {
@@ -68,7 +77,10 @@ public class QuantifierRemover extends TreeRewriterBase {
                 if (FreeVarDetector.hasFreeVar(left, quantifVar)) {
                     node = (BinaryOpNode) CleanVarConverter.clean(node);
                     qRight = (QuantifierNode) node.getRight();
+                    left = node.getLeft();
                 }
+                qRight = visitQuantifier(qRight);
+                left = visitFormula(left);
                 rval = new QuantifierNode(qRight.getToken(), qRight.getQuantifiedVar(),
                         new BinaryOpNode(node.getToken(), left, qRight.getSubformula()));
             } else {

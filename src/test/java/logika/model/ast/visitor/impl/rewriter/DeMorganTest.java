@@ -15,6 +15,9 @@ public class DeMorganTest {
                 .with("not(or(P, P))", "and(not(P), not(P))")
                 .with("not(and(and(P, Q), and(P, Q)))", "or(or(not(P), not(Q)), or(not(P), not(Q)))")
                 .with("not(and(not(P), not(R)))", "or(P, R)")
-                .with("not(all(x, P1(x, x)))", "any(x, not(P1(x, x)))");
+                .with("not(all(x, P1(x, x)))", "any(x, not(P1(x, x)))")
+                .with("not(and(any(y, P1(x, y)), any(y, and(P3(y), not(P1(x, a))))))",
+                        "or(all(y, not(P1(x, y))), all(y, or(not(P3(y)), P1(x, a))))"); // not(and(P3(y), not(P1(x,
+                                                                                        // a))))
     }
 }
