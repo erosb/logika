@@ -2,8 +2,17 @@ package logika.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import logika.model.ast.BinaryOpNode;
+import logika.model.ast.FormulaNode;
+import logika.model.ast.Node;
+import logika.model.ast.PredicateNode;
+import logika.model.ast.QuantifierNode;
+import logika.model.ast.TermNode;
+import logika.parser.Token;
 import logika.parser.TokenType;
 
 public class Language implements SymbolTable {
@@ -37,6 +46,26 @@ public class Language implements SymbolTable {
     @Override
     public boolean constantExists(final String name) {
         return constants.stream().filter((c) -> c.getName().equals(name)).count() == 1;
+    }
+
+    public FormulaNode forToken(final Token token, final List<Node> children) {
+        if (token.getType() == TokenType.ALL || token.getType() == TokenType.ANY) {
+            return new QuantifierNode(token, children);
+        }
+        else if (token.getType() == TokenType.ID) {
+            return new PredicateNode(predicateByName(token.getText()), children
+                    .stream()
+                    .map(c -> (TermNode) c)
+                    .collect(Collectors.toList()));
+        } else if (token.getType() == TokenType.AND || token.getType() == TokenType.OR
+                || token.getType() == TokenType.IMPL) {
+            return new BinaryOpNode(token, children
+                    .stream()
+                    .map(c -> (FormulaNode) c)
+                    .collect(Collectors.toList()));
+        } else {
+            throw new IllegalArgumentException("unsupported token: " + token);
+        }
     }
 
     @Override

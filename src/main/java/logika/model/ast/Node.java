@@ -22,12 +22,50 @@ public abstract class Node {
 
     public abstract <R> R accept(final NodeVisitor<R> visitor);
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Node other = (Node) obj;
+        if (children == null) {
+            if (other.children != null) {
+                return false;
+            }
+        } else if (!children.equals(other.children)) {
+            return false;
+        }
+        if (token == null) {
+            if (other.token != null) {
+                return false;
+            }
+        } else if (!token.equals(other.token)) {
+            return false;
+        }
+        return true;
+    }
+
     public List<Node> getChildren() {
         return children;
     }
 
     public Token getToken() {
         return token;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((children == null) ? 0 : children.hashCode());
+        result = prime * result + ((token == null) ? 0 : token.hashCode());
+        return result;
     }
 
     public boolean is(final TokenType tokenType) {

@@ -23,7 +23,7 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
     @Override
     public R visitBinaryOperator(final BinaryOpNode node) {
-        return visitChildren(node);
+        return visitFormula(node);
     }
 
     protected R visitChildren(final Node node) {
@@ -34,7 +34,7 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
     @Override
     public R visitConstant(final ConstantNode node) {
-        return visitChildren(node);
+        return visitTerm(node);
     }
 
     @Override
@@ -44,17 +44,17 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
     @Override
     public R visitFunction(final FunctionNode node) {
-        return visitChildren(node);
+        return visitTerm(node);
     }
 
     @Override
     public R visitPredicate(final PredicateNode node) {
-        return visitChildren(node);
+        return visitFormula(node);
     }
 
     @Override
     public R visitQuantifier(final QuantifierNode node) {
-        return visitChildren(node);
+        return visitFormula(node);
     }
 
     @Override
@@ -64,12 +64,12 @@ public class NodeVisitorBase<R> implements NodeVisitor<R> {
 
     @Override
     public R visitUnaryOperator(final UnaryOpNode node) {
-        return visitChildren(node);
+        return visitFormula(node);
     }
 
     @Override
     public R visitVar(final VarNode node) {
-        return visitChildren(node);
+        return visitTerm(node);
     }
 
 }

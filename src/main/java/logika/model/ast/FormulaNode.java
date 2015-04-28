@@ -4,16 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import logika.parser.Token;
+import logika.parser.TokenType;
 
 public abstract class FormulaNode extends Node {
-
-    private static List<Node> toNodeList(final List<FormulaNode> formulas) {
-        List<Node> rval = new ArrayList<Node>(formulas.size());
-        for (FormulaNode n : formulas) {
-            rval.add(n);
-        }
-        return rval;
-    }
 
     private final List<FormulaNode> subformulas;
 

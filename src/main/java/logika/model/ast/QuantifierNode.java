@@ -1,6 +1,7 @@
 package logika.model.ast;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import logika.model.ast.visitor.NodeVisitor;
@@ -14,6 +15,10 @@ public class QuantifierNode extends FormulaNode {
     private final TokenType quantifier;
 
     private final FormulaNode subformula;
+
+    public QuantifierNode(final Token token, final List<Node> childNodes) {
+        this(token, (VarNode) childNodes.get(0), (FormulaNode) childNodes.get(1));
+    }
 
     public QuantifierNode(final Token token, final VarNode quantifiedVar,
             final FormulaNode subformula) {
