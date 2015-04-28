@@ -50,8 +50,8 @@ public class CleanVarConverter extends TreeRewriterBase {
         if (reservedNames.contains(varName)) {
             String newName = suggestReplacementFor(varName);
             FormulaNode resultSub = VariableRenaming.rename(node.getSubformula(), varName, newName);
-            resultSub = visitFormula(resultSub);
             reservedNames.add(newName);
+            resultSub = visitFormula(resultSub);
             return new QuantifierNode(node.getToken(),
                     new VarNode(new Variable(newName, node.getQuantifiedVar().getType())), resultSub);
         }
