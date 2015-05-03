@@ -1,9 +1,13 @@
 package logika.model.ast.visitor.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import logika.model.Language;
@@ -12,7 +16,6 @@ import logika.model.ast.Node;
 import logika.model.ast.TermNode;
 import logika.model.ast.VarNode;
 import logika.model.ast.visitor.NodeVisitorBase;
-import static java.util.Objects.requireNonNull;
 
 public class MostFittingSubstitution extends NodeVisitorBase<Node> {
 
@@ -38,13 +41,24 @@ public class MostFittingSubstitution extends NodeVisitorBase<Node> {
         return Optional.of(rval);
     }
 
-    private VarNode lookupReplacementVar(final Collection<Node> diff) {
-        for (Node candidate : diff) {
-            if (candidate instanceof VarNode) {
-                return (VarNode) candidate;
-            }
-        }
-        return null;
+    private boolean hasAnyFreeVars(final Node node, final Collection<VarNode> vars) {
+        return vars.stream()
+                .filter(var -> FreeVarDetector.hasFreeVar(node, var.getVar().getName()))
+                .findAny().isPresent();
+    }
+
+    private TermNode lookupReplacementTerm(final Collection<TermNode> diff) {
+        Collection<VarNode> vars = diff.stream()
+                .filter(c -> c instanceof VarNode)
+                .map(c -> (VarNode) c)
+                .collect(Collectors.toList());
+        return diff.stream()
+                .filter(node -> !hasAnyFreeVars(node, vars))
+                .findFirst().orElse(
+                        diff.stream()
+                        .filter(node -> vars.contains(node))
+                        .findFirst().orElse(null)
+                        );
     }
 
     @Override
@@ -78,14 +92,17 @@ public class MostFittingSubstitution extends NodeVisitorBase<Node> {
 
     @Override
     public Node visitTerm(final TermNode master) {
-        Collection<Node> diff = new ArrayList<>(slaveList.size() + 1);
+        Collection<TermNode> diff = new ArrayList<>(slaveList.size() + 1);
         diff.add(master);
         for (Node slave : slaveList) {
             if (!slave.getToken().equals(master.getToken())) {
-                diff.add(slave);
+                diff.add((TermNode) slave);
             }
         }
-        return lookupReplacementVar(diff);
+        if (diff.size() == 1) {
+            return master;
+        }
+        return lookupReplacementTerm(diff);
     }
 
 }

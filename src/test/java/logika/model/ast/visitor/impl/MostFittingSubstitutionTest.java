@@ -30,8 +30,8 @@ public class MostFittingSubstitutionTest {
                 new Object[] { Arrays.asList("and(P, Q)", "or(P, Q)"), null },
                 new Object[] { Arrays.asList("and(P3(x), Q)", "and(P3(x), Q)"), "and(P3(x), Q)" },
                 new Object[] { Arrays.asList("and(P3(x), Q)", "and(P3(y), Q)"), "and(P3(x), Q)" },
-                new Object[] { Arrays.asList("and(P3(x), Q)", "and(P3(f(y, z)), Q)"), "and(P3(x), Q)" },
-                new Object[] { Arrays.asList("and(P3(f(x, y)), Q)", "and(P3(z), Q)"), "and(P3(z), Q)" }
+                new Object[] { Arrays.asList("and(P3(x), Q)", "and(P3(f(y, z)), Q)"), "and(P3(f(y, z)), Q)" },
+                new Object[] { Arrays.asList("and(P3(f(x, y)), Q)", "and(P3(z), Q)"), "and(P3(f(x, y)), Q)" }
                 );
     }
 
