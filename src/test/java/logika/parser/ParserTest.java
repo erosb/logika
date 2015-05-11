@@ -26,6 +26,11 @@ public class ParserTest {
     public void notOperatorWorks() {
         subject("not(P1(x, y))").recognize();
     }
+    
+    @Test
+    public void defaultPredicatesAreRecognized() {
+    	subject("and(true, false)").recognize();
+    }
 
     @Test
     public void parameterlessFormulaTest() {

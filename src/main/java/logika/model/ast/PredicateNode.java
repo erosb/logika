@@ -11,7 +11,7 @@ import logika.parser.Token;
 import logika.parser.TokenType;
 
 public class PredicateNode extends FormulaNode {
-
+	
     private final Predicate predicate;
 
     private final List<TermNode> arguments;

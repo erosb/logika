@@ -31,9 +31,12 @@ public class Language implements SymbolTable {
 
     public Language(final Set<Type> types, final Set<Constant> constants, final Set<Predicate> predicates,
             final Set<Function> functions) {
+    	Set<Predicate> allPredicates = new HashSet<>(predicates);
+    	allPredicates.add(Predicate.TRUE);
+    	allPredicates.add(Predicate.FALSE);
+    	this.predicates = Collections.unmodifiableSet(allPredicates);
         this.types = Collections.unmodifiableSet(types);
         this.constants = Collections.unmodifiableSet(constants);
-        this.predicates = Collections.unmodifiableSet(predicates);
         this.functions = Collections.unmodifiableSet(functions);
     }
 
