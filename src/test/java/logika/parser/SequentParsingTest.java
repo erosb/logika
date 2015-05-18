@@ -6,8 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import logika.model.Sequent;
 import logika.model.ast.FormulaNode;
-import logika.theoremprover.Sequent;
 
 import org.junit.Test;
 public class SequentParsingTest {

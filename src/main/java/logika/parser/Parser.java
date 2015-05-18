@@ -11,6 +11,7 @@ import logika.model.Function;
 import logika.model.Language;
 import logika.model.Predicate;
 import logika.model.ScopingSymbolTable;
+import logika.model.Sequent;
 import logika.model.Type;
 import logika.model.Variable;
 import logika.model.XMLLoader;
@@ -23,7 +24,6 @@ import logika.model.ast.QuantifierNode;
 import logika.model.ast.TermNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
-import logika.theoremprover.Sequent;
 
 public class Parser {
 

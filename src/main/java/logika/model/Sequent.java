@@ -1,4 +1,4 @@
-package logika.theoremprover;
+package logika.model;
 
 import static java.lang.String.format;
 
