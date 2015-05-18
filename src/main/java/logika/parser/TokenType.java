@@ -84,6 +84,14 @@ public enum TokenType implements Supplier<Function<Character, String>> {
             return new LiteralMatcher(",");
         }
 
+    },
+    ARROW {
+
+        @Override
+        public Function<Character, String> get() {
+            return new LiteralMatcher("->");
+        }
+        
     };
 
     /*

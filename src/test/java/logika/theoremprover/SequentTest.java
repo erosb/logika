@@ -8,10 +8,12 @@ import logika.model.Predicate;
 import logika.model.TestSupport;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.PredicateNode;
+import logika.parser.Parser;
 
 import org.junit.Test;
 
 import static java.lang.String.format;
+import static org.junit.Assert.*;
 public class SequentTest {
 	
 	private TestSupport ts = TestSupport.forLang1();
@@ -58,6 +60,30 @@ public class SequentTest {
 	public void conclusionsShouldBeListedForDisjunctions() {
 	    Sequent seq = Sequent.forFormula(ts.parseFormula("impl(true, or(P, Q))"));
 	    assertCollectionEquals(parsePredicateList("P Q"), seq.conclusions());
+	}
+	
+	@Test
+	public void testIsTerminal() {
+	    Sequent seq = parseSequent("P -> P, Q");
+	    assertTrue(seq.isTerminal());
+	    seq = parseSequent("P -> Q, R");
+	    assertFalse(seq.isTerminal());
+	}
+	
+	private Sequent parseSequent(String seq) {
+	    return Parser.forString(seq, ts.lang()).recognizeSequent();
+	}
+	
+	@Test
+	public void isTerminalShouldBeTrueForImplication() {
+	    Sequent seq = parseSequent("impl(P, Q) -> impl(P, Q), and(P, Q)");
+	    assertTrue(seq.isTerminal());
+	}
+	
+	@Test
+	public void implWithDifferentArgsIsNotTerminal() {
+	    Sequent seq = parseSequent("impl(P, Q) -> impl(P, R), and(P, Q)");
+        assertFalse(seq.isTerminal());
 	}
 
 }

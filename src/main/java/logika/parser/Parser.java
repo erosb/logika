@@ -23,6 +23,7 @@ import logika.model.ast.QuantifierNode;
 import logika.model.ast.TermNode;
 import logika.model.ast.UnaryOpNode;
 import logika.model.ast.VarNode;
+import logika.theoremprover.Sequent;
 
 public class Parser {
 
@@ -61,6 +62,36 @@ public class Parser {
 
     public FormulaNode recognize() {
         return recognizeFormula();
+    }
+    
+    public Sequent recognizeSequent() {
+        List<FormulaNode> premises = new ArrayList<>();
+        List<FormulaNode> conclusions = new ArrayList<>();
+        do {
+            FormulaNode f = recognizeFormula();
+            premises.add(f);
+            Token token = lexer.nextToken();
+            if (token.getType() == TokenType.ARROW) {
+                break;
+            } else if (token.getType() == TokenType.COMMA) {
+                continue;
+            } else {
+                throw new RecognitionException(String.format("expected ',' or '->' , got %s", token.getText()));
+            }
+        } while(true);
+        do {
+            FormulaNode f = recognizeFormula();
+            conclusions.add(f);
+            Token token = lexer.nextToken();
+            if (token == null) {
+                break;
+            } else if (token.getType() == TokenType.COMMA) {
+                continue;
+            } else {
+                throw new RecognitionException(String.format("expected ',', got %s", token.getText()));
+            }
+        } while(true);
+        return new Sequent(premises, conclusions);
     }
 
     private FormulaNode recognizeFormula() {

@@ -80,7 +80,7 @@ public class Sequent {
         }
 
     }
-
+    
     public static Sequent forFormula(FormulaNode input) {
         if (!input.is(TokenType.IMPL)) {
             throw new IllegalArgumentException(format(
@@ -107,6 +107,11 @@ public class Sequent {
 
     public Collection<FormulaNode> conclusions() {
         return conclusions;
+    }
+    
+    
+    public boolean isTerminal() {
+        return premises.stream().filter(conclusions::contains).findFirst().isPresent();
     }
     
     @Override
