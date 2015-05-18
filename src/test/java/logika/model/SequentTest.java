@@ -1,4 +1,4 @@
-package logika.theoremprover;
+package logika.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,6 @@ import java.util.Collections;
 
 import logika.model.Predicate;
 import logika.model.Sequent;
-import logika.model.TestSupport;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.PredicateNode;
 import logika.parser.Parser;
