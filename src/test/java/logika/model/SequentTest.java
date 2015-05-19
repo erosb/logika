@@ -78,6 +78,12 @@ public class SequentTest {
 	}
 	
 	@Test
+	public void isTerminalShouldBeTrueForNoConclusion() {
+	    Sequent seq = ts.parseSequent("impl(P, Q) -> ");
+        assertTrue(seq.isTerminal());
+	}
+	
+	@Test
 	public void implWithDifferentArgsIsNotTerminal() {
 	    Sequent seq = ts.parseSequent("impl(P, Q) -> impl(P, R), and(P, Q)");
         assertFalse(seq.isTerminal());

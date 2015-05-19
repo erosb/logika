@@ -80,9 +80,15 @@ public class Parser {
             }
         } while(true);
         do {
+            Token token = lexer.nextToken();
+            if (token == null) {
+                break;
+            } else {
+                lexer.pushBack(token);
+            }
             FormulaNode f = recognizeFormula();
             conclusions.add(f);
-            Token token = lexer.nextToken();
+            token = lexer.nextToken();
             if (token == null) {
                 break;
             } else if (token.getType() == TokenType.COMMA) {
