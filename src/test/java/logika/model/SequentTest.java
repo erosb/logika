@@ -64,25 +64,22 @@ public class SequentTest {
 	
 	@Test
 	public void testIsTerminal() {
-	    Sequent seq = parseSequent("P -> P, Q");
+	    Sequent seq = ts.parseSequent("P -> P, Q");
 	    assertTrue(seq.isTerminal());
-	    seq = parseSequent("P -> Q, R");
+	    seq = ts.parseSequent("P -> Q, R");
 	    assertFalse(seq.isTerminal());
 	}
 	
-	private Sequent parseSequent(String seq) {
-	    return Parser.forString(seq, ts.lang()).recognizeSequent();
-	}
 	
 	@Test
 	public void isTerminalShouldBeTrueForImplication() {
-	    Sequent seq = parseSequent("impl(P, Q) -> impl(P, Q), and(P, Q)");
+	    Sequent seq = ts.parseSequent("impl(P, Q) -> impl(P, Q), and(P, Q)");
 	    assertTrue(seq.isTerminal());
 	}
 	
 	@Test
 	public void implWithDifferentArgsIsNotTerminal() {
-	    Sequent seq = parseSequent("impl(P, Q) -> impl(P, R), and(P, Q)");
+	    Sequent seq = ts.parseSequent("impl(P, Q) -> impl(P, R), and(P, Q)");
         assertFalse(seq.isTerminal());
 	}
 

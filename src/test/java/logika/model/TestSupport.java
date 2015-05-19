@@ -89,5 +89,9 @@ public class TestSupport {
     public RewriterTestSupport testRewriter(final Function<FormulaNode, FormulaNode> rewriter) {
         return new RewriterTestSupport(rewriter);
     }
+    
+    public Sequent parseSequent(String seq) {
+        return Parser.forString(seq, lang).recognizeSequent();
+    }
 
 }

@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -121,4 +123,41 @@ public class Sequent {
                 + conclusions.stream().map(FormulaNode::toString).collect(Collectors.joining(", "));
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((conclusions == null) ? 0 : conclusions.hashCode());
+        result = prime * result + ((premises == null) ? 0 : premises.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Sequent other = (Sequent) obj;
+        return collectionsEqual(premises, other.premises) && collectionsEqual(conclusions, other.conclusions);
+    }
+
+    private boolean collectionsEqual(Collection<FormulaNode> coll1, Collection<FormulaNode> coll2) {
+        Iterator<FormulaNode> c1It = coll1.iterator();
+        Iterator<FormulaNode> c2It = coll2.iterator();
+        while (c1It.hasNext()) {
+            if (!c2It.hasNext()) {
+                return false;
+            }
+            FormulaNode c1Elem = c1It.next();
+            FormulaNode c2Elem = c2It.next();
+            if (!Objects.equals(c1Elem, c2Elem)) {
+                return false;
+            }
+        }
+        return (!c2It.hasNext());
+    }
+    
 }
