@@ -10,6 +10,7 @@ import logika.model.ast.FormulaNode;
 import logika.model.ast.PredicateNode;
 import logika.parser.Parser;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.lang.String.format;
@@ -75,12 +76,6 @@ public class SequentTest {
 	public void isTerminalShouldBeTrueForImplication() {
 	    Sequent seq = ts.parseSequent("impl(P, Q) -> impl(P, Q), and(P, Q)");
 	    assertTrue(seq.isTerminal());
-	}
-	
-	@Test
-	public void isTerminalShouldBeTrueForNoConclusion() {
-	    Sequent seq = ts.parseSequent("impl(P, Q) -> ");
-        assertTrue(seq.isTerminal());
 	}
 	
 	@Test

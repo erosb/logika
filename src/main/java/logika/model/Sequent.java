@@ -113,9 +113,7 @@ public class Sequent {
     
     
     public boolean isTerminal() {
-        return conclusions.isEmpty() 
-               || conclusions.stream().filter(premises::contains).findFirst().isPresent()
-                ;
+        return conclusions.stream().filter(premises::contains).findFirst().isPresent();
     }
     
     @Override

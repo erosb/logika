@@ -43,6 +43,7 @@ public class SequentCalculus {
 
     public SequentCalculus(DeductionListener listener, DeductionStep prevStep, Sequent sequent) {
         this.listener = listener;
+        this.prevStep = prevStep;
         this.sequent = sequent;
     }
     

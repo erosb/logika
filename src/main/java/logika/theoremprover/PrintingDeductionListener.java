@@ -3,6 +3,8 @@ package logika.theoremprover;
 import java.util.HashMap;
 import java.util.Map;
 
+import logika.model.Sequent;
+
 public class PrintingDeductionListener implements DeductionListener {
     
     private Map<Integer, Integer> depthCounter = new HashMap<>();
@@ -20,15 +22,16 @@ public class PrintingDeductionListener implements DeductionListener {
 
     @Override
     public void accept(DeductionStep step) {
-//        DeductionStep prevStep = step.getPrevStep();
-//        if (prevStep == null) {
-//            prefix = nextPrefixInDepth(step.getDepth());
-//        }
-//        String prefix = prefixes.get(step);
-//        if (prefix == null) {
-//            prefix = nextPrefixInDepth(step.getDepth());
-//        }
-        System.out.println("\t" + step.getStepSequent());
+        System.out.println(prefixFor(step) + step.getStepSequent());
     }
+
+	private String prefixFor(DeductionStep step) {
+		StringBuilder rval = new StringBuilder();
+		int depth = step.getDepth();
+		for (int i = 0; i < depth; ++i) {
+			rval.append("  ");
+		}
+		return rval.toString();
+	}
      
 }
