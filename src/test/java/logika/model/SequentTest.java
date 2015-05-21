@@ -1,20 +1,17 @@
 package logika.model;
 
+import static java.lang.String.format;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import logika.model.Predicate;
-import logika.model.Sequent;
 import logika.model.ast.FormulaNode;
 import logika.model.ast.PredicateNode;
-import logika.parser.Parser;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static java.lang.String.format;
-import static org.junit.Assert.*;
 public class SequentTest {
 	
 	private TestSupport ts = TestSupport.forLang1();
